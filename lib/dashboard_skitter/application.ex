@@ -18,6 +18,8 @@ defmodule DashboardSkitter.Application do
       # {DashboardSkitter.Worker, arg}
     ]
 
+    TeleHandler.setup()
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: DashboardSkitter.Supervisor]
