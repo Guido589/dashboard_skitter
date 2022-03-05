@@ -17,7 +17,7 @@ defmodule DashboardSkitterWeb.Endpoint do
   # You should set gzip to true if you are running phx.digest
   # when deploying your static files in production.
   plug Plug.Static,
-    at: "/",
+    at: "priv/static",
     from: :dashboard_skitter,
     gzip: false,
     only: ~w(assets fonts images favicon.ico robots.txt)
