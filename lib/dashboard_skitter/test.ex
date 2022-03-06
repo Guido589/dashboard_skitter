@@ -9,7 +9,6 @@ defmodule TeleHandler do
   end
 
   def handle_event([:skitter, :worker, :init], _, %{context: ctx}, _config) do
-
     IO.puts "Server #{Skitter.Runtime.node_name_for_context(ctx)}" 
   end
 end

@@ -7,6 +7,9 @@
 # General application configuration
 import Config
 
+config :skitter,
+  telemetry: true
+
 # Configures the endpoint
 config :dashboard_skitter, DashboardSkitterWeb.Endpoint,
   url: [host: "localhost"],
@@ -20,7 +23,7 @@ config :esbuild,
   default: [
     args:
       ~w(js/app.js --bundle --target=es2017 --outdir=../priv/static/assets --external:/fonts/* --external:/images/*),
-    cd: Path.expand("../deps/dashboard_skitter/assets", __DIR__),
+    cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
 
