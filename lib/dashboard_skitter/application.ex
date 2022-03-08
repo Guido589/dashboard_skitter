@@ -18,8 +18,8 @@ defmodule DashboardSkitter.Application do
       # {DashboardSkitter.Worker, arg}
     ]
 
-    {:ok, _} = MapSetWorkers.start_link(:workers)
-    TeleHandler.setup()
+    {:ok, _} = DashboardSkitter.ListWorkers.start_link(:workers)
+    DashboardSkitter.TeleHandler.setup()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
