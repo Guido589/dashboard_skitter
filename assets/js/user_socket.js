@@ -65,7 +65,6 @@ channel.push("joined", {body: ""})
 
 channel.on("workers", payload =>{
   console.log("Received workers: ", payload)
-  let workers = document.getElementById("workers")
   let reply = payload.reply
   for (let index = 0; index < reply.length; index++) {
     var ul = document.getElementById("workers");
