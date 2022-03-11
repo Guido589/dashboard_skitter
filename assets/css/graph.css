@@ -1,0 +1,13 @@
+@import "./phoenix.css";
+
+#cy {
+    width: 60%;
+    height: 100%;
+    position: absolute;
+    border: 1px black solid;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+  }
