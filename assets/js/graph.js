@@ -12,20 +12,6 @@ let options = {
     rankDir: 'LR'
 }
 
-let nodesWorkers = [
-    { data: { id: 'a' } },
-    { data: { id: 'b' } },
-    { data: { id: 'c' } },
-    { data: { id: 'd' } },
-];
-
-let edgesWorkers = [
-    { data: { id: 'ab', source: 'a', target: 'b'} },
-    { data: { id: 'bd', source: 'b', target: 'd'} },
-    { data: { id: 'cd', source: 'c', target: 'd'} },
-    { data: { id: 'ac', source: 'a', target: 'c'} },
-];
-
 var cy = cytoscape({
         container: document.querySelector('#cy'),
         layout: options,
@@ -39,6 +25,7 @@ var cy = cytoscape({
                 'content': 'data(id)',
                 'text-valign': 'center',
                 'text-halign': 'center',
+                'width': 'label'
             })
             .selector('edge')
             .css({
@@ -50,25 +37,31 @@ var cy = cytoscape({
                 'curve-style': 'bezier'
             }),
         elements: {
-            nodes: nodesWorkers,
-            edges: edgesWorkers,
+            nodes: [],
+            edges: [],
         },
-        userZoomingEnabled: false,
-        userPanningEnabled: false,
         autoungrabify: true
     });
 
-function addWorker(workerName,) {
-    cy.add([{ group: "nodes", data: { id: workerName}}]);
-    cy.makeLayout(options).run()
+function addWorkers(workerNames) {
+    for (let idx = 0; idx < workerNames.length; idx++) {
+        const workerName = workerNames[idx];
+        const node = { group: "nodes", data: { id: workerName }};
+        cy.add([node]); 
+    }
+    cy.makeLayout(options).run();
+    cy.fit(cy.nodes);
 }
 
-function addEdge(source, target) {
-    const idEdge = source.concat(target);
-    cy.add([{ group: "edges", data: { id: idEdge, source: source, target: target } }]);
-    cy.makeLayout(options).run()
-    
+function addEdges(sources, targets) {
+    for (let idx = 0; idx < sources.length; idx++) {
+        const source = sources[idx];
+        const target = targets[idx];
+        const idEdge = source.concat(target);
+        cy.add([{ group: "edges", data: { id: idEdge, source: source, target: target } }]);
+    }
+    cy.layout(options).run();
+    cy.fit();
 }
 
-addWorker("e");
-addEdge("d", "e");
+export {addWorkers, addEdges}

@@ -9,16 +9,16 @@ defmodule DashboardSkitter.ListWorkers do
     {:ok, []}
   end
 
-  def handle_cast({:add_worker, worker}, li) do
-    {:noreply, [worker | li]}
+  def handle_cast({:add_worker, worker, pid}, li) do
+    {:noreply, [%{name: worker, pid: pid} | li]}
   end
 
   def handle_call(:nr_workers, _from, li) do
     {:reply, Enum.count(li), li} 
   end
 
-  def add_worker(name) do
-    GenServer.cast(:workers, {:add_worker, name})
+  def add_worker(name, pid) do
+    GenServer.cast(:workers, {:add_worker, name, pid})
   end
 
   def amount_workers do

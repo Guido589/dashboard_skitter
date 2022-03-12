@@ -1,10 +1,21 @@
 @import "./phoenix.css";
 
 #cy {
-    width: 60%;
-    height: 100%;
+    width: 100%;
+    height: 600px;
     position: absolute;
     border: 1px black solid;
+    margin-bottom: -4px
+}
+
+.outerContainer {
+    display: flex;
+    margin-bottom: 2em;
+    height: 700px;
+  }
+
+.canvasContainer {
+    flex-grow: 1;
 }
 
 .grid-container {

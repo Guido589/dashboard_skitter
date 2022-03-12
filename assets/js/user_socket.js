@@ -3,6 +3,7 @@
 
 // Bring in Phoenix channels client library:
 import {Socket} from "phoenix"
+import {addWorkers, addEdges} from "./graph.js"
 
 // And connect to the path in "lib/dashboard_skitter_web/endpoint.ex". We pass the
 // token for authentication. Read below how it should be used.
@@ -65,11 +66,15 @@ channel.push("joined", {body: ""})
 
 channel.on("workers", payload =>{
   console.log("Received workers: ", payload)
-  let reply = payload.reply
+  let reply = payload.reply;
+  addWorkers(reply.map((el)=>el.pid));
+  
   for (let index = 0; index < reply.length; index++) {
     var ul = document.getElementById("workers");
     var li = document.createElement("li");
-    li.appendChild(document.createTextNode(reply[index]));
+    const name = reply[index].name;
+    const pid = reply[index].pid;
+    li.appendChild(document.createTextNode(name + " ("+pid+")"));
     ul.appendChild(li);
   }
 })

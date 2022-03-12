@@ -9,9 +9,9 @@ defmodule DashboardSkitter.TeleHandler do
 
   end
 
-  def handle_event([:skitter, :worker, :init], _, %{context: ctx}, _config) do
+  def handle_event([:skitter, :worker, :init], _, %{context: ctx, pid: pid}, _config) do
     name = Skitter.Runtime.node_name_for_context(ctx)
     IO.puts "Server #{name}"
-    DashboardSkitter.ListWorkers.add_worker(name)
+    DashboardSkitter.ListWorkers.add_worker(name, inspect pid)
   end
 end
