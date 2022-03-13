@@ -18,6 +18,6 @@ defmodule DashboardSkitter.TeleHandler do
 
   def handle_event([:skitter, :worker, :send], _, %{from: from, to: to}, _config) do
     IO.puts "Server FROM #{inspect from} TO #{inspect to}"
-    DashboardSkitter.ListWorkers.add_recipient(from, to)
+    DashboardSkitter.ListWorkers.add_recipient(inspect(from), inspect(to))
   end
 end

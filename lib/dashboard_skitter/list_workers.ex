@@ -15,8 +15,8 @@ defmodule DashboardSkitter.ListWorkers do
 
   def handle_cast({:add_recipient, from, to}, li) do
     new_list = Enum.map(li, fn elem -> 
-    if elem.pid == inspect from do
-      Map.put(elem, :to, [inspect(to) | elem.to])
+    if elem.pid == from do
+      Map.put(elem, :to, [to | elem.to])
     else elem
     end
     end)

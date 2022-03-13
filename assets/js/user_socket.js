@@ -62,8 +62,6 @@ channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
 
-channel.push("joined", {body: ""})
-
 channel.on("workers", payload =>{
   console.log("Received workers: ", payload)
   let reply = payload.reply;
