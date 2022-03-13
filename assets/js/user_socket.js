@@ -67,16 +67,27 @@ channel.push("joined", {body: ""})
 channel.on("workers", payload =>{
   console.log("Received workers: ", payload)
   let reply = payload.reply;
+
   addWorkers(reply.map((el)=>el.pid));
-  
-  for (let index = 0; index < reply.length; index++) {
-    var ul = document.getElementById("workers");
-    var li = document.createElement("li");
-    const name = reply[index].name;
-    const pid = reply[index].pid;
-    li.appendChild(document.createTextNode(name + " ("+pid+")"));
-    ul.appendChild(li);
+  for (let workerIdx = 0; workerIdx < reply.length; workerIdx++) {
+    const worker = reply[workerIdx];
+    const workerToAr = worker.to;
+    const pid = worker.pid;
+    const name = worker.name;
+    for (let toIdx = 0; toIdx < workerToAr.length; toIdx++) {
+      const to = workerToAr[toIdx];
+      addElemenToList("edges", "from " + pid + " to "+to);
+    }
+    addEdges(pid, workerToAr);
+    addElemenToList("workers", name + " ("+pid+")");
   }
 })
+
+function addElemenToList(elementId, listItem){
+  var el = document.getElementById(elementId);
+  var li = document.createElement("li");
+  li.appendChild(document.createTextNode(listItem));
+  el.appendChild(li);
+}
 
 export default socket

@@ -40,6 +40,8 @@ var cy = cytoscape({
             nodes: [],
             edges: [],
         },
+        userZoomingEnabled: false,
+        userPanningEnabled: false,
         autoungrabify: true
     });
 
@@ -53,14 +55,13 @@ function addWorkers(workerNames) {
     cy.fit(cy.nodes);
 }
 
-function addEdges(sources, targets) {
-    for (let idx = 0; idx < sources.length; idx++) {
-        const source = sources[idx];
+function addEdges(source, targets) {
+    for (let idx = 0; idx < targets.length; idx++) {
         const target = targets[idx];
         const idEdge = source.concat(target);
         cy.add([{ group: "edges", data: { id: idEdge, source: source, target: target } }]);
     }
-    cy.layout(options).run();
+    cy.makeLayout(options).run();
     cy.fit();
 }
 

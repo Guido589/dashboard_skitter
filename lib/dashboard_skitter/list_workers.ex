@@ -10,7 +10,17 @@ defmodule DashboardSkitter.ListWorkers do
   end
 
   def handle_cast({:add_worker, worker, pid}, li) do
-    {:noreply, [%{name: worker, pid: pid} | li]}
+    {:noreply, [%{name: worker, pid: pid, to: []} | li]}
+  end
+
+  def handle_cast({:add_recipient, from, to}, li) do
+    new_list = Enum.map(li, fn elem -> 
+    if elem.pid == inspect from do
+      Map.put(elem, :to, [inspect(to) | elem.to])
+    else elem
+    end
+    end)
+    {:noreply, new_list}
   end
 
   def handle_call(:nr_workers, _from, li) do
@@ -19,6 +29,10 @@ defmodule DashboardSkitter.ListWorkers do
 
   def add_worker(name, pid) do
     GenServer.cast(:workers, {:add_worker, name, pid})
+  end
+
+  def add_recipient(from, to) do
+    GenServer.cast(:workers, {:add_recipient, from, to})
   end
 
   def amount_workers do
