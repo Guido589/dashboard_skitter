@@ -62,7 +62,7 @@ channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
 
-channel.on("workers", payload =>{
+channel.on("initialize_workers", payload =>{
   console.log("Received workers: ", payload)
   let reply = payload.reply;
 
@@ -74,12 +74,34 @@ channel.on("workers", payload =>{
     const name = worker.name;
     for (let toIdx = 0; toIdx < workerToAr.length; toIdx++) {
       const to = workerToAr[toIdx];
-      addElemenToList("edges", "from " + pid + " to "+to);
+      addElemenToList("edges", templateEdges(pid, to));
     }
     addEdges(pid, workerToAr);
-    addElemenToList("workers", name + " ("+pid+")");
+    addElemenToList("workers", templateWorkers(name, pid));
   }
 })
+
+channel.on("update_workers", payload =>{
+  console.log("Received update worker: ", payload);
+  let msg = payload.msg;
+  addElemenToList("workers", templateWorkers(msg.name, msg.pid));
+  addWorkers([msg.pid]);
+})
+
+channel.on("update_edges", payload =>{
+  console.log("Received update edge: ", payload);
+  let msg = payload.msg;
+  addElemenToList("edges", templateEdges(msg.from, msg.to));
+  addEdges(msg.from, [msg.to]);
+})
+
+function templateWorkers(name, pid){
+  return name + " ("+pid+")";
+}
+
+function templateEdges(from, to){
+  return "from " + from + " to "+to;
+}
 
 function addElemenToList(elementId, listItem){
   var el = document.getElementById(elementId);
