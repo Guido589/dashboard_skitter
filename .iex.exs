@@ -9,6 +9,7 @@ stream =
   end)
 
 wf = workflow do
-  stream_source(stream)
+  #stream_source(stream)
+  stream_source(1..20)
   ~> print()
-end #|> Skitter.Runtime.deploy()
+end #|> Skitter.Runtime.deploy(wf)
