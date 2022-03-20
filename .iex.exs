@@ -10,7 +10,7 @@ stream =
 
 wf = workflow do
   stream_source(stream, as: source)
-  #stream_source(1..20)
+  #stream_source(1..20, as: source)
   ~> print("Workflow print", as: print)
 end #|> Skitter.Runtime.deploy(wf)
 
