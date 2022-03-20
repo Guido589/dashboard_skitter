@@ -11,7 +11,7 @@ stream =
 wf = workflow do
   stream_source(stream, as: source)
   #stream_source(1..20)
-  ~> print()
+  ~> print("Workflow print", as: print)
 end #|> Skitter.Runtime.deploy(wf)
 
 Skitter.Dot.render_to_file(wf)
