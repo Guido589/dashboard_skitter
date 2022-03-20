@@ -66,7 +66,7 @@ channel.on("initialize_workers", payload =>{
   console.log("Received workers: ", payload)
   let reply = payload.reply;
 
-  addWorkers(reply.map((el)=>el.pid));
+  addWorkers(reply);
   for (let workerIdx = 0; workerIdx < reply.length; workerIdx++) {
     const worker = reply[workerIdx];
     const workerToAr = worker.to;
@@ -85,7 +85,7 @@ channel.on("update_workers", payload =>{
   console.log("Received update worker: ", payload);
   let msg = payload.msg;
   addElemenToList("workers", templateWorkers(msg.name, msg.pid));
-  addWorkers([msg.pid]);
+  addWorkers([msg]);
 })
 
 channel.on("update_edges", payload =>{

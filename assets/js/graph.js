@@ -22,7 +22,7 @@ var cy = cytoscape({
                 'shape': 'rectangle',
                 'border-width': '1px',
                 'border-color': 'black',
-                'content': 'data(id)',
+                'content': 'data(name)',
                 'text-valign': 'center',
                 'text-halign': 'center',
                 'width': 'label'
@@ -45,10 +45,12 @@ var cy = cytoscape({
         autoungrabify: true
     });
 
-function addWorkers(workerNames) {
-    for (let idx = 0; idx < workerNames.length; idx++) {
-        const workerName = workerNames[idx];
-        const node = { group: "nodes", data: { id: workerName }};
+function addWorkers(workers) {
+    for (let idx = 0; idx < workers.length; idx++) {
+        const worker = workers[idx];
+        const workerName = worker.name;
+        const workerId = worker.pid;
+        const node = { group: "nodes", data: { id: workerId, name: workerName }};
         cy.add([node]); 
     }
     cy.makeLayout(options).run();
