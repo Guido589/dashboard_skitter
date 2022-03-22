@@ -29,6 +29,7 @@ function createGraph(name){
                 'content': 'data(name)',
                 'text-valign': 'center',
                 'text-halign': 'center',
+                'text-wrap': 'wrap',
                 'width': 'label'
             })
             .selector('edge')
@@ -51,14 +52,15 @@ function createGraph(name){
     return cy;
 }
 
-function addNodes(graph, nodes) {
+function addNodes(graph, nodes, textFormat) {
     for (let idx = 0; idx < nodes.length; idx++) {
         const curNode = nodes[idx];
+
         const node = { 
             group: "nodes", 
             data: { 
                 id: curNode.id,
-                name: curNode.name 
+                name: textFormat(curNode)
             }
         };
         graph.add([node]); 
