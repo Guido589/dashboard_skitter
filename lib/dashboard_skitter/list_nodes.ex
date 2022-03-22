@@ -1,4 +1,4 @@
-defmodule DashboardSkitter.ListWorkers do
+defmodule DashboardSkitter.ListNodes do
   use GenServer
 
   def start_link(name) do
@@ -9,8 +9,8 @@ defmodule DashboardSkitter.ListWorkers do
     {:ok, []}
   end
 
-  def handle_cast({:add_worker, worker}, li) do
-    {:noreply, [worker | li]}
+  def handle_cast({:add_node, node}, li) do
+    {:noreply, [node | li]}
   end
 
   def handle_cast({:add_recipient, from, to, send_fn}, li) do
@@ -28,23 +28,23 @@ defmodule DashboardSkitter.ListWorkers do
     {:noreply, new_list}
   end
 
-  def handle_call(:nr_workers, _from, li) do
+  def handle_call(:nr_nodes, _from, li) do
     {:reply, Enum.count(li), li} 
   end
 
-  def add_worker(worker) do
-    GenServer.cast(:workers, {:add_worker, worker})
+  def add_node(genServer, node) do
+    GenServer.cast(genServer, {:add_node, node})
   end
 
-  def add_recipient(from, to, send_fn) do
-    GenServer.cast(:workers, {:add_recipient, from, to, send_fn})
+  def add_recipient(genServer, from, to, send_fn) do
+    GenServer.cast(genServer, {:add_recipient, from, to, send_fn})
   end
 
-  def amount_workers do
-    GenServer.call(:workers, :nr_workers)
+  def amount_nodes(genServer) do
+    GenServer.call(genServer, :nr_nodes)
   end
 
-  def get_state do
-    :sys.get_state(:workers)
+  def get_state(genServer) do
+    :sys.get_state(genServer)
   end
 end

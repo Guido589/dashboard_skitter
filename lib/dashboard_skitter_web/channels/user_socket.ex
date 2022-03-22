@@ -2,7 +2,7 @@ defmodule DashboardSkitterWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "worker", DashboardSkitterWeb.WorkerChannel
+  channel "user", DashboardSkitterWeb.UserChannel
 
   # A Socket handler
   #

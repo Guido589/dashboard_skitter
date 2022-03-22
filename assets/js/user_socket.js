@@ -3,7 +3,7 @@
 
 // Bring in Phoenix channels client library:
 import {Socket} from "phoenix"
-import {addWorkers, addEdges} from "./graph.js"
+import * as graph from "./graph.js"
 
 // And connect to the path in "lib/dashboard_skitter_web/endpoint.ex". We pass the
 // token for authentication. Read below how it should be used.
@@ -55,20 +55,22 @@ let socket = new Socket("/socket", {params: {token: window.userToken}})
 socket.connect()
 
 // Now that you are connected, you can join channels with a topic.
-// worker topic
-let channel = socket.channel("worker", {})
+// user topic
+let channel = socket.channel("user", {})
 
 channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
 
-channel.on("initialize_workers", payload =>{
-  console.log("Received workers: ", payload)
-  let reply = payload.reply;
+channel.on("initialize", payload =>{
+  console.log("Received initialization: ", payload)
+  const replyWorkers = payload.reply.workers;
+  const replyComponents = payload.reply.components;
 
-  addWorkers(reply);
-  for (let workerIdx = 0; workerIdx < reply.length; workerIdx++) {
-    const worker = reply[workerIdx];
+  graph.addNodes(graph.workersGraph, replyWorkers);
+  graph.addNodes(graph.componentsGraph, replyComponents);
+  for (let workerIdx = 0; workerIdx < replyWorkers.length; workerIdx++) {
+    const worker = replyWorkers[workerIdx];
     const workerToAr = worker.to;
     const pid = worker.pid;
     const name = worker.name;
@@ -76,7 +78,7 @@ channel.on("initialize_workers", payload =>{
       const to = workerToAr[toIdx];
       addElemenToList("edges", templateEdges(pid, to));
     }
-    addEdges(pid, workerToAr);
+    graph.addEdges(graph.workersGraph, pid, workerToAr);
     addElemenToList("workers", templateWorkers(name, pid));
   }
 })
@@ -85,14 +87,19 @@ channel.on("update_workers", payload =>{
   console.log("Received update worker: ", payload);
   let msg = payload.msg;
   addElemenToList("workers", templateWorkers(msg.name, msg.pid));
-  addWorkers([msg]);
+  graph.addNodes(graph.workersGraph, [msg]);
 })
 
 channel.on("update_edges", payload =>{
   console.log("Received update edge: ", payload);
   let msg = payload.msg;
   addElemenToList("edges", templateEdges(msg.from, msg.to));
-  addEdges(msg.from, [msg.to]);
+  graph.addEdges(graph.workersGraph, msg.from, [msg.to]);
+})
+
+channel.on("update_components", payload =>{
+  console.log("Received update components: ", payload);
+  graph.addNodes(graph.componentsGraph, [payload.msg]);
 })
 
 function templateWorkers(name, pid){

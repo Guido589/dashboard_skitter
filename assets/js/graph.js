@@ -3,6 +3,9 @@ import dagre from 'cytoscape-dagre';
 
 cytoscape.use(dagre);
 
+const workersGraph = createGraph("workerGraph");
+const componentsGraph = createGraph("componentGraph");
+
 let options = {
     name: 'dagre',
     directed: true,
@@ -12,8 +15,9 @@ let options = {
     rankDir: 'LR'
 }
 
-var cy = cytoscape({
-        container: document.querySelector('#cy'),
+function createGraph(name){
+    var cy = cytoscape({
+        container: document.querySelector('#'+name),
         layout: options,
         style: cytoscape.stylesheet()
             .selector('node')
@@ -44,27 +48,29 @@ var cy = cytoscape({
         userPanningEnabled: false,
         autoungrabify: true
     });
+    return cy;
+}
 
-function addWorkers(workers) {
+function addNodes(graph, workers) {
     for (let idx = 0; idx < workers.length; idx++) {
         const worker = workers[idx];
         const workerName = worker.name;
         const workerId = worker.pid;
         const node = { group: "nodes", data: { id: workerId, name: workerName }};
-        cy.add([node]); 
+        graph.add([node]); 
     }
-    cy.makeLayout(options).run();
-    cy.fit(cy.nodes);
+    graph.makeLayout(options).run();
+    graph.fit(graph.nodes);
 }
 
-function addEdges(source, targets) {
+function addEdges(graph, source, targets) {
     for (let idx = 0; idx < targets.length; idx++) {
         const target = targets[idx];
         const idEdge = source.concat(target);
-        cy.add([{ group: "edges", data: { id: idEdge, source: source, target: target } }]);
+        graph.add([{ group: "edges", data: { id: idEdge, source: source, target: target } }]);
     }
-    cy.makeLayout(options).run();
-    cy.fit();
+    graph.makeLayout(options).run();
+    graph.fit();
 }
 
-export {addWorkers, addEdges}
+export {addNodes, addEdges, createGraph, workersGraph, componentsGraph}

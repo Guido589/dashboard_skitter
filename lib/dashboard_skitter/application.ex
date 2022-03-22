@@ -18,7 +18,8 @@ defmodule DashboardSkitter.Application do
       # {DashboardSkitter.Worker, arg}
     ]
 
-    {:ok, _} = DashboardSkitter.ListWorkers.start_link(:workers)
+    {:ok, _} = DashboardSkitter.ListNodes.start_link(:workers)
+    {:ok, _} = DashboardSkitter.ListNodes.start_link(:components)
     DashboardSkitter.TeleHandler.setup()
 
     # See https://hexdocs.pm/elixir/Supervisor.html
