@@ -20,11 +20,15 @@ defmodule DashboardSkitterWeb.UserChannel do
       DashboardSkitterWeb.Endpoint.broadcast(@channel_name, "update_workers", %{msg: bdy})
     end
 
-    def update_edges(bdy) do
-      DashboardSkitterWeb.Endpoint.broadcast(@channel_name, "update_edges", %{msg: bdy})
+    def update_edges_workers(bdy) do
+      DashboardSkitterWeb.Endpoint.broadcast(@channel_name, "update_edges_workers", %{msg: bdy})
     end
 
     def update_components(bdy) do
       DashboardSkitterWeb.Endpoint.broadcast(@channel_name, "update_components", %{msg: bdy})
+    end
+
+    def update_edges_components(bdy) do  
+      DashboardSkitterWeb.Endpoint.broadcast(@channel_name, "update_edges_components", %{msg: bdy})
     end
 end

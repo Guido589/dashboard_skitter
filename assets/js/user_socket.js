@@ -69,29 +69,19 @@ channel.on("initialize", payload =>{
 
   graph.addNodes(graph.workersGraph, replyWorkers);
   graph.addNodes(graph.componentsGraph, replyComponents);
-  for (let workerIdx = 0; workerIdx < replyWorkers.length; workerIdx++) {
-    const worker = replyWorkers[workerIdx];
-    const workerToAr = worker.to;
-    const pid = worker.pid;
-    const name = worker.name;
-    for (let toIdx = 0; toIdx < workerToAr.length; toIdx++) {
-      const to = workerToAr[toIdx];
-      addElemenToList("edges", templateEdges(pid, to));
-    }
-    graph.addEdges(graph.workersGraph, pid, workerToAr);
-    addElemenToList("workers", templateWorkers(name, pid));
-  }
+  initialize_edges_workers(replyWorkers);
+  initialize_edges_components(replyComponents);
 })
 
 channel.on("update_workers", payload =>{
   console.log("Received update worker: ", payload);
   let msg = payload.msg;
-  addElemenToList("workers", templateWorkers(msg.name, msg.pid));
+  addElemenToList("workers", templateWorkers(msg.name, msg.id));
   graph.addNodes(graph.workersGraph, [msg]);
 })
 
-channel.on("update_edges", payload =>{
-  console.log("Received update edge: ", payload);
+channel.on("update_edges_workers", payload =>{
+  console.log("Received update workers edge: ", payload);
   let msg = payload.msg;
   addElemenToList("edges", templateEdges(msg.from, msg.to));
   graph.addEdges(graph.workersGraph, msg.from, [msg.to]);
@@ -102,8 +92,14 @@ channel.on("update_components", payload =>{
   graph.addNodes(graph.componentsGraph, [payload.msg]);
 })
 
-function templateWorkers(name, pid){
-  return name + " ("+pid+")";
+channel.on("update_edges_components", payload =>{
+  console.log("Received update components edge: ", payload);
+  let msg = payload.msg;
+  graph.addEdges(graph.componentsGraph, msg.from, [msg.to]);
+})
+
+function templateWorkers(name, id){
+  return name + " ("+id+")";
 }
 
 function templateEdges(from, to){
@@ -117,4 +113,19 @@ function addElemenToList(elementId, listItem){
   el.appendChild(li);
 }
 
+function initialize_edges_components(components){
+  components.forEach((component) =>{
+    graph.addEdges(graph.componentsGraph, component.id, component.to);
+  });
+}
+
+function initialize_edges_workers(workers){
+  workers.forEach((worker) =>{
+    worker.to.forEach((to) =>{
+      addElemenToList("edges", templateEdges(worker.id, to));
+    });
+    graph.addEdges(graph.workersGraph, worker.id, worker.to);
+    addElemenToList("workers", templateWorkers(worker.name, worker.id));
+  });
+}
 export default socket

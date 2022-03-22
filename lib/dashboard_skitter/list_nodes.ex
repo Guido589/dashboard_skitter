@@ -15,7 +15,7 @@ defmodule DashboardSkitter.ListNodes do
 
   def handle_cast({:add_recipient, from, to, send_fn}, li) do
     new_list = Enum.map(li, fn elem -> 
-    if elem.pid == from do
+    if elem.id == from do
       if MapSet.member?(elem.to, to) do
         elem
       else

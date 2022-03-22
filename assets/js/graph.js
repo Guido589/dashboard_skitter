@@ -51,12 +51,16 @@ function createGraph(name){
     return cy;
 }
 
-function addNodes(graph, workers) {
-    for (let idx = 0; idx < workers.length; idx++) {
-        const worker = workers[idx];
-        const workerName = worker.name;
-        const workerId = worker.pid;
-        const node = { group: "nodes", data: { id: workerId, name: workerName }};
+function addNodes(graph, nodes) {
+    for (let idx = 0; idx < nodes.length; idx++) {
+        const curNode = nodes[idx];
+        const node = { 
+            group: "nodes", 
+            data: { 
+                id: curNode.id,
+                name: curNode.name 
+            }
+        };
         graph.add([node]); 
     }
     graph.makeLayout(options).run();

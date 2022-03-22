@@ -1,5 +1,7 @@
 defmodule DashboardSkitter.TeleHandler do
   use Skitter.DSL
+  alias DashboardSkitterWeb.UserChannel, as: UserChannel
+  alias DashboardSkitter.ListNodes, as: ListNodes
   
   def setup do
     events = [
@@ -14,25 +16,34 @@ defmodule DashboardSkitter.TeleHandler do
   def handle_event([:skitter, :worker, :init], _, %{context: ctx, pid: pid}, _config) do
     name = Skitter.Runtime.node_name_for_context(ctx)
     IO.puts "Server #{name}"
-    worker = %{name: name, pid: inspect(pid), to: MapSet.new() }
-    DashboardSkitter.ListNodes.add_node(:workers, worker)
-    DashboardSkitterWeb.UserChannel.update_workers(worker)
+    worker = %{name: name, id: inspect(pid), to: MapSet.new() }
+    ListNodes.add_node(:workers, worker)
+    UserChannel.update_workers(worker)
   end
 
   def handle_event([:skitter, :worker, :send], _, %{from: from, to: to}, _config) do
     IO.puts "Server FROM #{inspect from} TO #{inspect to}"
-    send_fn = fn(from, to) -> DashboardSkitterWeb.UserChannel.update_edges(%{from: from, to: to}) end
-    DashboardSkitter.ListNodes.add_recipient(:workers, inspect(from), inspect(to), send_fn)
+    send_fn = fn(from, to) -> UserChannel.update_edges_workers(%{from: from, to: to}) end
+    ListNodes.add_recipient(:workers, inspect(from), inspect(to), send_fn)
   end
 
   def handle_event([:skitter, :runtime, :deploy], _, %{ref: ref}, _config) do
-    Skitter.Runtime.get_workflow(ref).nodes
-      |> Map.values()
-      |> Enum.each(
-        fn x ->
-          component = %{name: x.component, pid: Enum.random(0..100), to: MapSet.new() }
-          DashboardSkitter.ListNodes.add_node(:components, component)
-          DashboardSkitterWeb.UserChannel.update_components(component) 
+    wf = Skitter.Runtime.get_workflow(ref)
+    nodes = wf.nodes
+
+    Enum.each(nodes, fn {componentKey, componentInfo} ->
+       component = %{name: componentInfo.component, id: componentKey, to: MapSet.new() }
+        ListNodes.add_node(:components, component)
+        UserChannel.update_components(component)
+        get_links(componentKey, componentInfo.links) 
       end)
     end
+
+  def get_links(from, links) do
+    Enum.map(links, fn {_,v} ->      
+      Enum.map(v, fn {k, _} -> 
+        send_fn = fn(from, to) -> UserChannel.update_edges_components(%{from: from, to: to}) end     
+        ListNodes.add_recipient(:components, from, k, send_fn) end) 
+    end)
+  end
 end
