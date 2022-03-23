@@ -11,7 +11,9 @@ defmodule DashboardSkitterWeb.Endpoint do
   ]
 
   socket "/socket", DashboardSkitterWeb.UserSocket,
-    websocket: true,
+    websocket: [
+      timeout: :infinity
+    ],
     longpoll: false
 
   # socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]

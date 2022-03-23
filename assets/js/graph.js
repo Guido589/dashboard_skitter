@@ -23,7 +23,7 @@ function createGraph(name){
             .selector('node')
             .css({
                 'background-color': '#fff',
-                'shape': 'rectangle',
+                'shape': 'roundrectangle',
                 'border-width': '1px',
                 'border-color': 'black',
                 'content': 'data(name)',

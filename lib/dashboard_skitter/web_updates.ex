@@ -1,0 +1,10 @@
+defmodule DashboardSkitter.WebUpdates do
+    alias DashboardSkitterWeb.UserChannel, as: UserChannel
+
+    @behaviour DashboardSkitter.SendUpdateBehaviour
+
+    def update_workers(bdy) do UserChannel.update_workers(bdy) end
+    def update_edges_workers(bdy) do UserChannel.update_edges_workers(bdy) end
+    def update_components(bdy) do UserChannel.update_components(bdy) end
+    def update_edges_components(bdy) do UserChannel.update_edges_components(bdy) end
+end

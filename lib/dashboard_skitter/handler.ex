@@ -1,6 +1,6 @@
 defmodule DashboardSkitter.TeleHandler do
   use Skitter.DSL
-  alias DashboardSkitterWeb.UserChannel, as: UserChannel
+  alias DashboardSkitter.WebUpdates, as: Updates
   alias DashboardSkitter.ListNodes, as: ListNodes
   
   def setup do
@@ -18,12 +18,12 @@ defmodule DashboardSkitter.TeleHandler do
     IO.puts "Server #{name}"
     worker = %{name: name, id: inspect(pid), to: MapSet.new() }
     ListNodes.add_node(:workers, worker)
-    UserChannel.update_workers(worker)
+    Updates.update_workers(worker)
   end
 
   def handle_event([:skitter, :worker, :send], _, %{from: from, to: to}, _config) do
     IO.puts "Server FROM #{inspect from} TO #{inspect to}"
-    send_fn = fn(from, to) -> UserChannel.update_edges_workers(%{from: from, to: to}) end
+    send_fn = fn(from, to) -> Updates.update_edges_workers(%{from: from, to: to}) end
     ListNodes.add_recipient(:workers, inspect(from), inspect(to), send_fn)
   end
 
@@ -34,7 +34,7 @@ defmodule DashboardSkitter.TeleHandler do
     Enum.each(nodes, fn {componentKey, componentInfo} ->
        component = %{name: componentInfo.component, id: componentKey, to: MapSet.new() }
         ListNodes.add_node(:components, component)
-        UserChannel.update_components(component)
+        Updates.update_components(component)
         get_links(componentKey, componentInfo.links) 
       end)
     end
@@ -42,7 +42,7 @@ defmodule DashboardSkitter.TeleHandler do
   def get_links(from, links) do
     Enum.map(links, fn {_,v} ->      
       Enum.map(v, fn {k, _} -> 
-        send_fn = fn(from, to) -> UserChannel.update_edges_components(%{from: from, to: to}) end     
+        send_fn = fn(from, to) -> Updates.update_edges_components(%{from: from, to: to}) end     
         ListNodes.add_recipient(:components, from, k, send_fn) end) 
     end)
   end
