@@ -30,7 +30,7 @@ defmodule DashboardSkitterWeb.UserChannel do
       DashboardSkitterWeb.Endpoint.broadcast(@channel_name, "update_edges_components", %{msg: bdy})
     end
 
-    def started() do  
-      DashboardSkitterWeb.Endpoint.broadcast(@channel_name, "started", %{})
+    def started(bdy) do  
+      DashboardSkitterWeb.Endpoint.broadcast(@channel_name, "started", %{msg: bdy})
     end
 end

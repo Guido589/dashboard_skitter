@@ -38,9 +38,8 @@ defmodule DashboardSkitter.TeleHandler do
         get_links(componentKey, componentInfo.links) 
       end)
 
-    initialize_start_time();
     Workflow.update_started(:workflow, true)
-    Updates.started()
+    Updates.started(initialize_start_time())
     end
 
   def get_links(from, links) do
@@ -53,7 +52,6 @@ defmodule DashboardSkitter.TeleHandler do
 
   def initialize_start_time() do
     start_time = DateTime.utc_now() |> DateTime.to_unix()
-    IO.puts start_time
     Workflow.update_start_time(:workflow, start_time)
     start_time
   end

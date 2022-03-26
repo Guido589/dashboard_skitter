@@ -78,7 +78,7 @@ channel.on("initialize", payload =>{
 })
 
 channel.on("started", payload =>{
-  started();
+  started(payload.msg);
 })
 
 channel.on("update_workers", payload =>{

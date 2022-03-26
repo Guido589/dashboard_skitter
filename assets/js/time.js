@@ -15,7 +15,8 @@ function updateTime(){
     }
 }
 
-function started(){
+function started(time){
+    start_time = time;
     isStarted = true;
 }
 
