@@ -1,4 +1,4 @@
-defmodule DashboardSkitter.WebUpdates do
+defmodule DashboardSkitterWeb.WebUpdates do
     alias DashboardSkitterWeb.UserChannel, as: UserChannel
 
     @behaviour DashboardSkitter.SendUpdateBehaviour

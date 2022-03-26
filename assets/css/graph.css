@@ -5,13 +5,22 @@
     height: 600px;
     position: absolute;
     border: 1px black solid;
-    margin-bottom: -4px
+}
+
+#containerWorker{
+  height: 670px;
+}
+
+#componentGraph{
+  height: 100px;
+}
+
+#containerComponent{
+  height: 170px;
 }
 
 .outerContainer {
     display: flex;
-    margin-bottom: 2em;
-    height: 700px;
   }
 
 .canvasContainer {

@@ -1,6 +1,6 @@
 defmodule DashboardSkitter.TeleHandler do
   use Skitter.DSL
-  alias DashboardSkitter.WebUpdates, as: Updates
+  alias DashboardSkitterWeb.WebUpdates, as: Updates
   alias DashboardSkitter.ListNodes, as: ListNodes
   
   def setup do

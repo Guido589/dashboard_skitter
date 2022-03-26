@@ -15,3 +15,6 @@ wf = workflow do
 end #|> Skitter.Runtime.deploy(wf)
 
 Skitter.Dot.render_to_file(wf)
+
+# iex -S mix phx.server
+# Skitter.Runtime.deploy(wf)
