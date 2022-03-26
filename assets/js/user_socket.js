@@ -4,6 +4,7 @@
 // Bring in Phoenix channels client library:
 import {Socket} from "phoenix"
 import * as graph from "./graph.js"
+import {initialize_start_time, started} from "./time.js"
 
 // And connect to the path in "lib/dashboard_skitter_web/endpoint.ex". We pass the
 // token for authentication. Read below how it should be used.
@@ -66,11 +67,18 @@ channel.on("initialize", payload =>{
   console.log("Received initialization: ", payload)
   const replyWorkers = payload.reply.workers;
   const replyComponents = payload.reply.components;
+  const start_time = payload.reply.start_time;
+  const isStarted = payload.reply.isStarted;
 
   graph.addNodes(graph.workersGraph, replyWorkers, workerFormatNode);
   graph.addNodes(graph.componentsGraph, replyComponents, componentFormatNode);
   initialize_edges_workers(replyWorkers);
   initialize_edges_components(replyComponents);
+  initialize_start_time(start_time, isStarted);
+})
+
+channel.on("started", payload =>{
+  started();
 })
 
 channel.on("update_workers", payload =>{

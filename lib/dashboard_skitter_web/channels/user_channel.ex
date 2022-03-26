@@ -9,10 +9,8 @@ defmodule DashboardSkitterWeb.UserChannel do
       end
   
     def handle_info(:after_join, socket) do
-      workers = DashboardSkitter.ListNodes.get_state(:workers)
-      components = DashboardSkitter.ListNodes.get_state(:components)
-      reply = %{workers: workers, components: components}
-      push(socket, "initialize", %{reply: reply})
+      workflow = DashboardSkitter.Workflow.get_state(:workflow)
+      push(socket, "initialize", %{reply: workflow})
       {:noreply, socket}
     end
 
@@ -30,5 +28,9 @@ defmodule DashboardSkitterWeb.UserChannel do
 
     def update_edges_components(bdy) do  
       DashboardSkitterWeb.Endpoint.broadcast(@channel_name, "update_edges_components", %{msg: bdy})
+    end
+
+    def started() do  
+      DashboardSkitterWeb.Endpoint.broadcast(@channel_name, "started", %{})
     end
 end

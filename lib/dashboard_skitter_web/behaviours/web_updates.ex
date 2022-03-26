@@ -7,4 +7,5 @@ defmodule DashboardSkitterWeb.WebUpdates do
     def update_edges_workers(bdy) do UserChannel.update_edges_workers(bdy) end
     def update_components(bdy) do UserChannel.update_components(bdy) end
     def update_edges_components(bdy) do UserChannel.update_edges_components(bdy) end
+    def started() do UserChannel.started() end
 end
