@@ -20,11 +20,20 @@ function started(time){
     isStarted = true;
 }
 
+const oneDayInSec = 86400;
+
 function update(){
     var curSeconds = new Date().getTime() / 1000;
-    uptime = curSeconds - start_time;
-    time = new Date(uptime * 1000).toISOString().substr(11, 8)
-    time = "Uptime workflow: " + time;
+    uptime = (curSeconds - start_time) % oneDayInSec;
+    let d = Math.floor((curSeconds - start_time) / oneDayInSec).toString();
+    let h = Math.floor(uptime / 3600).toString();
+    let m = Math.floor(uptime / 60).toString();
+    let s = Math.floor(uptime % 60).toString();
+    d = d.padStart(2, '0');
+    h = h.padStart(2, '0');
+    m = m.padStart(2, '0');
+    s = s.padStart(2, '0');
+    time = "Uptime workflow: " + d + ":" + h + ":" + m + ":" + s;
     document.getElementById("uptime").innerHTML = time;
 }
 

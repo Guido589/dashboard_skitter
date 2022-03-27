@@ -49,6 +49,17 @@ function createGraph(name){
         userPanningEnabled: false,
         autoungrabify: true
     });
+
+    cy.on('tap', function(event){
+        var evtTarget = event.target;
+      
+        if( evtTarget === cy ){
+          console.log('tap on background');
+        } else {
+          console.log(evtTarget.id());
+        }
+      });
+
     return cy;
 }
 
