@@ -24,10 +24,11 @@ const oneDayInSec = 86400;
 
 function update(){
     var curSeconds = new Date().getTime() / 1000;
-    uptime = (curSeconds - start_time) % oneDayInSec;
-    let d = Math.floor((curSeconds - start_time) / oneDayInSec).toString();
+    totUptime = curSeconds - start_time;
+    uptime = totUptime % oneDayInSec;
+    let d = Math.floor(totUptime / oneDayInSec).toString();
     let h = Math.floor(uptime / 3600).toString();
-    let m = Math.floor(uptime / 60).toString();
+    let m = Math.floor((uptime / 60) % 60).toString();
     let s = Math.floor(uptime % 60).toString();
     d = d.padStart(2, '0');
     h = h.padStart(2, '0');
@@ -36,7 +37,6 @@ function update(){
     time = "Uptime workflow: " + d + ":" + h + ":" + m + ":" + s;
     document.getElementById("uptime").innerHTML = time;
 }
-
 
 setInterval(updateTime, 1000);
 
