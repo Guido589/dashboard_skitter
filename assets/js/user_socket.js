@@ -70,8 +70,8 @@ channel.on("initialize", payload =>{
   const start_time = payload.reply.start_time;
   const isStarted = payload.reply.isStarted;
 
-  graph.addNodes(graph.workersGraph, replyWorkers, workerFormatNode);
-  graph.addNodes(graph.componentsGraph, replyComponents, componentFormatNode);
+  graph.addNodes(graph.workersGraph, replyWorkers, workerFormatNode, workerFormatNode);
+  graph.addNodes(graph.componentsGraph, replyComponents, componentFormatNode, componentGroup);
   initialize_edges_workers(replyWorkers);
   initialize_edges_components(replyComponents);
   initialize_start_time(start_time, isStarted);
@@ -85,7 +85,7 @@ channel.on("update_workers", payload =>{
   console.log("Received update worker: ", payload);
   let msg = payload.msg;
   addElemenToList("workers", templateWorkers(msg.name, msg.id));
-  graph.addNodes(graph.workersGraph, [msg], workerFormatNode);
+  graph.addNodes(graph.workersGraph, [msg], workerFormatNode, workerFormatNode);
 })
 
 channel.on("update_edges_workers", payload =>{
@@ -97,7 +97,7 @@ channel.on("update_edges_workers", payload =>{
 
 channel.on("update_components", payload =>{
   console.log("Received update components: ", payload);
-  graph.addNodes(graph.componentsGraph, [payload.msg], componentFormatNode);
+  graph.addNodes(graph.componentsGraph, [payload.msg], componentFormatNode, componentGroup);
 })
 
 channel.on("update_edges_components", payload =>{
@@ -143,5 +143,9 @@ function componentFormatNode(node){
 
 function workerFormatNode(node){
   return node.name;
+}
+
+function componentGroup(node){
+  return node.id;
 }
 export default socket
