@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "c3": "^0.7.20",
     "cytoscape": "^3.21.0",
-    "cytoscape-dagre": "^2.4.0"
+    "cytoscape-dagre": "^2.4.0",
+    "d3": "^7.4.0"
   }
 }

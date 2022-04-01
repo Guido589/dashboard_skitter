@@ -4,6 +4,7 @@
 // Bring in Phoenix channels client library:
 import {Socket} from "phoenix"
 import * as graph from "./graph.js"
+import * as chart from "./chart.js"
 import {initialize_start_time, started} from "./time.js"
 
 // And connect to the path in "lib/dashboard_skitter_web/endpoint.ex". We pass the
@@ -109,7 +110,6 @@ channel.on("update_edges_components", payload =>{
 
 channel.on("update_metrics", payload =>{
   let msg = payload.msg;
-  console.log(msg);
   document.getElementById("root_cpu").innerHTML = "CPU usage: " + msg.cpu + "%";
   if(msg.mem < gigInBytes){
     document.getElementById("root_memory").innerHTML = "Memory usage: " + ((msg.mem) / (1024 * 1024)).toFixed(2) + " MB";
@@ -117,11 +117,14 @@ channel.on("update_metrics", payload =>{
     document.getElementById("root_memory").innerHTML = "Memory usage: " + ((msg.mem) / (1024 * 1024 * 1024)).toFixed(2) + " GB";
   }
 
-  if(msg.cpu > 75){
-    document.getElementById("root_cpu").style.color = 'red';
+  if(msg.cpu >= 75){
+    document.getElementById("root_node").style.backgroundColor = '#FA5A50';
+  }else if(msg.cpu >= 50){
+    document.getElementById("root_node").style.backgroundColor ='#509cff';
   }else{
-    document.getElementById("root_cpu").style.color ='blue';
+    document.getElementById("root_node").style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--main-color');
   }
+  chart.addPointToChart(msg.cpu);
 })
 
 function templateWorkers(name, id){

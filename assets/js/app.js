@@ -5,8 +5,10 @@ import "../css/graph.css"
 import "../css/nav.css"
 import "../css/cluster_nodes.css"
 import "../css/style.css"
+import "../css/chart.css"
 import "./user_socket.js"
 import "./graph.js"
+import "./chart.js"
 
 // If you want to use Phoenix channels, run `mix help phx.gen.channel`
 // to get started and then uncomment the line below.

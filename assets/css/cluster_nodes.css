@@ -1,15 +1,15 @@
 .nodes > p, .nodes > h3{
     margin: 0px 5px;
 }
+
 .nodes{
-    border: 1px black solid;
     border-radius: 5px;
     background-color: var(--main-color);
     opacity: 0.85;
 }
 
 .nodes:hover{
-    background-color: var(--hover-main-color);
+    background-color: var(--hover-main-color) !important;
     cursor: pointer;
 }
 

@@ -5,7 +5,8 @@ cytoscape.use(dagre);
 
 const workersGraph = createGraph("workerGraph");
 const componentsGraph = createGraph("componentGraph");
-const selectNodeColor = '#f7c72a';
+const selectNodeColor = getComputedStyle(document.body).getPropertyValue('--main-color');
+
 let selectedNode = "";
 
 let options = {

@@ -1,0 +1,8 @@
+#chart{
+    width: 50%;
+    shape-rendering: unset;
+}
+
+.c3-axis-x .tick{
+    display: none;
+}
