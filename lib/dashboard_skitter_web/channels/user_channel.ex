@@ -33,4 +33,8 @@ defmodule DashboardSkitterWeb.UserChannel do
     def started(bdy) do  
       DashboardSkitterWeb.Endpoint.broadcast(@channel_name, "started", %{msg: bdy})
     end
+
+    def update_metrics(bdy) do
+      DashboardSkitterWeb.Endpoint.broadcast(@channel_name, "update_metrics", %{msg: bdy})
+    end
 end

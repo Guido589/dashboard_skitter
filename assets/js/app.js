@@ -2,6 +2,9 @@
 // Remove this line if you add a your own CSS build pipeline (e.g postcss).
 import "../css/app.css"
 import "../css/graph.css"
+import "../css/nav.css"
+import "../css/cluster_nodes.css"
+import "../css/style.css"
 import "./user_socket.js"
 import "./graph.js"
 

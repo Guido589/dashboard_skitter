@@ -20,6 +20,10 @@ defmodule DashboardSkitter.Application do
 
     {:ok, _} = DashboardSkitter.Workflow.start_link(:workflow)
     DashboardSkitter.TeleHandler.setup()
+    :application.start(:sasl)
+    :application.start(:os_mon)
+    pid = spawn(DashboardSkitter.SystemMetrics, :start, [])
+    send pid, {:loop}
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

@@ -1,0 +1,28 @@
+@import "./phoenix.css";
+
+#header{
+    display: flex;
+    justify-content: left;
+}
+
+header{
+    position: fixed;
+    z-index: 999;
+    background-color: var(--main-color);
+    border-radius: 5px;
+}
+
+#header > a{
+    color: black;
+    height: 40px;
+    font-weight: bold;
+    padding: 5px 10px;
+}
+#header > a:hover{
+    cursor: pointer;
+    background-color: var(--hover-main-color);
+}
+
+main.container{
+    padding-top: 50px;
+}

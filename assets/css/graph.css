@@ -30,3 +30,32 @@
     display: grid;
     grid-template-columns: auto auto auto;
   }
+
+#button1{
+  background-color: #6fb2d9 !important;
+  border-color: black;
+  opacity: 0.85;
+  color: black;
+}
+
+#button2{
+  background-color: #7be980 !important;
+  border-color: black;
+  opacity: 0.85;
+  color: black;
+}
+
+#button3{
+  background-color: #ee8666 !important;
+  border-color: black;
+  opacity: 0.85;
+  color: black;
+}
+
+#button4{
+  background-color: #fabf00 !important;
+  border-color: black;
+  opacity: 0.85;
+  color: black;
+}
+

@@ -9,6 +9,7 @@ import {initialize_start_time, started} from "./time.js"
 // And connect to the path in "lib/dashboard_skitter_web/endpoint.ex". We pass the
 // token for authentication. Read below how it should be used.
 let socket = new Socket("/socket", {params: {token: window.userToken}})
+let gigInBytes = 1073741824;
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
@@ -104,6 +105,23 @@ channel.on("update_edges_components", payload =>{
   console.log("Received update components edge: ", payload);
   let msg = payload.msg;
   graph.addEdges(graph.componentsGraph, msg.from, [msg.to]);
+})
+
+channel.on("update_metrics", payload =>{
+  let msg = payload.msg;
+  console.log(msg);
+  document.getElementById("root_cpu").innerHTML = "CPU usage: " + msg.cpu + "%";
+  if(msg.mem < gigInBytes){
+    document.getElementById("root_memory").innerHTML = "Memory usage: " + ((msg.mem) / (1024 * 1024)).toFixed(2) + " MB";
+  }else{
+    document.getElementById("root_memory").innerHTML = "Memory usage: " + ((msg.mem) / (1024 * 1024 * 1024)).toFixed(2) + " GB";
+  }
+
+  if(msg.cpu > 75){
+    document.getElementById("root_cpu").style.color = 'red';
+  }else{
+    document.getElementById("root_cpu").style.color ='blue';
+  }
 })
 
 function templateWorkers(name, id){

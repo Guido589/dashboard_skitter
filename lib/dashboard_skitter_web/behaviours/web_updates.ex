@@ -8,4 +8,5 @@ defmodule DashboardSkitterWeb.WebUpdates do
     def update_components(bdy) do UserChannel.update_components(bdy) end
     def update_edges_components(bdy) do UserChannel.update_edges_components(bdy) end
     def started(bdy) do UserChannel.started(bdy) end
+    def update_metrics(bdy) do UserChannel.update_metrics(bdy) end
 end
