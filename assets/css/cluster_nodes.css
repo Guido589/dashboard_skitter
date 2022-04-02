@@ -13,8 +13,8 @@
     cursor: pointer;
 }
 
-#cluster_nodes{
-    margin-bottom: 50px;
+.cluster_nodes{
+    margin-bottom: 15px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;

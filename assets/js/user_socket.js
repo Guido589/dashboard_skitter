@@ -4,13 +4,12 @@
 // Bring in Phoenix channels client library:
 import {Socket} from "phoenix"
 import * as graph from "./graph.js"
-import * as chart from "./chart.js"
-import {initialize_start_time, started} from "./time.js"
+import * as clusterNodes from "./cluster_nodes.js"
+import {initializeStartTime, started} from "./time.js"
 
 // And connect to the path in "lib/dashboard_skitter_web/endpoint.ex". We pass the
 // token for authentication. Read below how it should be used.
 let socket = new Socket("/socket", {params: {token: window.userToken}})
-let gigInBytes = 1073741824;
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
@@ -66,17 +65,20 @@ channel.join()
   .receive("error", resp => { console.log("Unable to join", resp) })
 
 channel.on("initialize", payload =>{
-  console.log("Received initialization: ", payload)
+  console.log("Received initialization: ", payload.reply)
   const replyWorkers = payload.reply.workers;
   const replyComponents = payload.reply.components;
-  const start_time = payload.reply.start_time;
+  const startTime = payload.reply.start_time;
   const isStarted = payload.reply.isStarted;
+  const clusterNodesLi = [payload.reply.cluster_nodes];
 
   graph.addNodes(graph.workersGraph, replyWorkers, workerFormatNode, workerFormatNode);
   graph.addNodes(graph.componentsGraph, replyComponents, componentFormatNode, componentGroup);
-  initialize_edges_workers(replyWorkers);
-  initialize_edges_components(replyComponents);
-  initialize_start_time(start_time, isStarted);
+  initializeEdgesWorkers(replyWorkers);
+  initializeEdgesComponents(replyComponents);
+  clusterNodes.initializeClusterNodes(clusterNodesLi);
+  initializeStartTime(startTime, isStarted);
+
 })
 
 channel.on("started", payload =>{
@@ -109,22 +111,11 @@ channel.on("update_edges_components", payload =>{
 })
 
 channel.on("update_metrics", payload =>{
-  let msg = payload.msg;
-  document.getElementById("root_cpu").innerHTML = "CPU usage: " + msg.cpu + "%";
-  if(msg.mem < gigInBytes){
-    document.getElementById("root_memory").innerHTML = "Memory usage: " + ((msg.mem) / (1024 * 1024)).toFixed(2) + " MB";
-  }else{
-    document.getElementById("root_memory").innerHTML = "Memory usage: " + ((msg.mem) / (1024 * 1024 * 1024)).toFixed(2) + " GB";
-  }
-
-  if(msg.cpu >= 75){
-    document.getElementById("root_node").style.backgroundColor = '#FA5A50';
-  }else if(msg.cpu >= 50){
-    document.getElementById("root_node").style.backgroundColor ='#509cff';
-  }else{
-    document.getElementById("root_node").style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--main-color');
-  }
-  chart.addPointToChart(msg.cpu);
+  const msg = payload.msg;
+  const metric = msg.metric;
+  const name = msg.name;
+  clusterNodes.showStats(metric.cpu, metric.mem, name);
+  clusterNodes.addMetricToNode(metric.cpu, metric.mem, metric.time, name);
 })
 
 function templateWorkers(name, id){
@@ -142,13 +133,13 @@ function addElemenToList(elementId, listItem){
   el.appendChild(li);
 }
 
-function initialize_edges_components(components){
+function initializeEdgesComponents(components){
   components.forEach((component) =>{
     graph.addEdges(graph.componentsGraph, component.id, component.to);
   });
 }
 
-function initialize_edges_workers(workers){
+function initializeEdgesWorkers(workers){
   workers.forEach((worker) =>{
     worker.to.forEach((to) =>{
       addElemenToList("edges", templateEdges(worker.id, to));

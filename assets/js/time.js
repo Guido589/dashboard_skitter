@@ -1,7 +1,7 @@
 let start_time = 0;
 let isStarted = false;
 
-function initialize_start_time(start_time_workflow, isStartedWorkflow){
+function initializeStartTime(start_time_workflow, isStartedWorkflow){
     isStarted = isStartedWorkflow;
     if(isStarted){
         start_time = start_time_workflow;
@@ -40,4 +40,4 @@ function update(){
 
 setInterval(updateTime, 1000);
 
-export{initialize_start_time, started}
+export{initializeStartTime, started}

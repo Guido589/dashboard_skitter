@@ -10,6 +10,15 @@ defmodule DashboardSkitter.Application do
     children = [
       # Start the Telemetry supervisor
       DashboardSkitterWeb.Telemetry,
+      {DashboardSkitter.SystemMetrics, %{
+        name: "root",
+        metrics: :queue.new()
+      }},
+      {DashboardSkitter.Workflow, %{
+                                    workers: [], 
+                                    components: [],
+                                    start_time: 0,
+                                    isStarted: false}},
       # Start the PubSub system
       {Phoenix.PubSub, name: DashboardSkitter.PubSub},
       # Start the Endpoint (http/https)
@@ -18,12 +27,9 @@ defmodule DashboardSkitter.Application do
       # {DashboardSkitter.Worker, arg}
     ]
 
-    {:ok, _} = DashboardSkitter.Workflow.start_link(:workflow)
     DashboardSkitter.TeleHandler.setup()
     :application.start(:sasl)
     :application.start(:os_mon)
-    pid = spawn(DashboardSkitter.SystemMetrics, :start, [])
-    send pid, {:loop}
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

@@ -10,7 +10,8 @@ defmodule DashboardSkitterWeb.UserChannel do
   
     def handle_info(:after_join, socket) do
       workflow = DashboardSkitter.Workflow.get_state(:workflow)
-      push(socket, "initialize", %{reply: workflow})
+      info = Map.put(workflow, :cluster_nodes, DashboardSkitter.SystemMetrics.get_state())
+      push(socket, "initialize", %{reply: info})
       {:noreply, socket}
     end
 

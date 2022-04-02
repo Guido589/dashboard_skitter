@@ -1,16 +1,12 @@
 defmodule DashboardSkitter.Workflow do
   use GenServer
 
-  def start_link(name) do
-    GenServer.start_link(__MODULE__, :ok, name: name)
+  def start_link(start) do
+    GenServer.start_link(__MODULE__, start, name: :workflow)
   end
 
-  def init(:ok) do
-    {:ok, %{
-      workers: [], 
-      components: [],
-      start_time: 0,
-      isStarted: false}}
+  def init(start) do
+    {:ok, start}
   end
 
   def handle_cast({:add_node, node, location}, map) do
