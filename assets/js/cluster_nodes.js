@@ -66,11 +66,11 @@ function showStats(cpu, mem, name){
     }
   
     if(cpu >= 75){
-      document.getElementById(name + "_node").style.backgroundColor = '#FA5A50';
+      document.getElementById(name + "_node").style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--high-cpu-usage');
     }else if(cpu >= 50){
-      document.getElementById(name + "_node").style.backgroundColor ='#509cff';
+      document.getElementById(name + "_node").style.backgroundColor =getComputedStyle(document.body).getPropertyValue('--medium-cpu-usage');
     }else{
-      document.getElementById(name + "_node").style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--main-color');
+      document.getElementById(name + "_node").style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--low-cpu-usage');
     }
 }
 

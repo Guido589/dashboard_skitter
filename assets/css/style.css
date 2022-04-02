@@ -2,4 +2,7 @@
     --main-color: #f7c72a;
     --hover-main-color: #bc9b2e;
     --line-chart-color: #0169FA;
+    --low-cpu-usage: var(--main-color);
+    --medium-cpu-usage: #509cff;
+    --high-cpu-usage: #FA5A50;
   }

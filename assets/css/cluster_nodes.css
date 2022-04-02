@@ -19,4 +19,36 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
 }
-  
+
+.rect{
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+#rect1{
+    background-color: var(--low-cpu-usage);
+}
+
+#rect2{
+    background-color: var(--medium-cpu-usage);
+}
+
+#rect3{
+    background-color: var(--high-cpu-usage);
+}
+
+#node_legend{
+    display: block ruby;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#node_legend > div > p, #node_legend > p{
+    margin: 0px;
+}
+
+.legend_el{
+    margin: 0px 10px;
+    display: block ruby;
+}
