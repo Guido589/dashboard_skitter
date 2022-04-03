@@ -5,3 +5,11 @@
 .c3-axis-x .tick{
     display: none;
 }
+
+#charts{
+    margin-right: 10px;
+}
+
+.c3-line {
+    stroke-width: 2px !important; 
+  }

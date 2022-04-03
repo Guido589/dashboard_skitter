@@ -6,10 +6,10 @@ import * as clusterNodes from "./cluster_nodes.js"
 let cpuUsage = ['Cpu usage'];
 let memUsage = ['Memory Usage'];
 let xAxis = ['x'];
-const cpuChart = createChart("chart_cpu", 'CPU usage (%)', cpuUsage);
-const memChart = createChart("chart_mem", 'Memory usage (MB)', memUsage);
+const cpuChart = createChart("chart_cpu", 'CPU usage (%)', cpuUsage, "%");
+const memChart = createChart("chart_mem", 'Memory usage (MB)', memUsage, " MB");
 
-function createChart(name, text, yAxis){
+function createChart(name, text, yAxis, unit){
     let chart = c3.generate({
         bindto: '#' + name,
         size: {
@@ -43,6 +43,13 @@ function createChart(name, text, yAxis){
         animation: {
             enabled: false
         },
+        tooltip: {
+            format: {
+                value: function (value, ratio, id) {
+                    return value + unit;
+                }
+            }
+        },
         axis: {
             y: {
                 label:{
@@ -65,11 +72,11 @@ function addSinglePoint(cpu, mem, time){
     addPointToChart(cpu, cpuUsage);
     addPointToChart(mem, memUsage);
     addTimePoint(time);
-    refreshCharts(cpuChart, xAxis, cpuUsage);
-    refreshCharts(memChart, xAxis, memUsage);
+    refreshChart(cpuChart, xAxis, cpuUsage);
+    refreshChart(memChart, xAxis, memUsage);
 }
 
-function refreshCharts(chart, xAxis, yAxis){
+function refreshChart(chart, xAxis, yAxis){
     chart.load({
         columns: [
             xAxis,
@@ -90,8 +97,8 @@ function loadDataSet(points){
         addPointToChart(mem, memUsage);
         addTimePoint(time);
     }
-    refreshCharts(cpuChart, xAxis, cpuUsage);
-    refreshCharts(memChart, xAxis, memUsage);
+    refreshChart(cpuChart, xAxis, cpuUsage);
+    refreshChart(memChart, xAxis, memUsage);
 }
 
 function addPointToChart(val, ar){

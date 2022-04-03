@@ -11,8 +11,9 @@ defmodule DashboardSkitter.Application do
       # Start the Telemetry supervisor
       DashboardSkitterWeb.Telemetry,
       {DashboardSkitter.SystemMetrics, %{
-        name: "root",
-        metrics: :queue.new()
+        name: "Root",
+        metrics: :queue.new(),
+        detailed_mem: []
       }},
       {DashboardSkitter.Workflow, %{
                                     workers: [], 

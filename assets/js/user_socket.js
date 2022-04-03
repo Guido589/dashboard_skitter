@@ -114,8 +114,10 @@ channel.on("update_metrics", payload =>{
   const msg = payload.msg;
   const metric = msg.metric;
   const name = msg.name;
+  const detailedMem = msg.detailed_mem;
   clusterNodes.showStats(metric.cpu, metric.mem, name);
   clusterNodes.addMetricToNode(metric.cpu, metric.mem, metric.time, name);
+  clusterNodes.addDetailedOverview(name, metric.mem, detailedMem);
 })
 
 function templateWorkers(name, id){

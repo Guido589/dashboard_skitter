@@ -52,3 +52,38 @@
     margin: 0px 10px;
     display: block ruby;
 }
+
+#detailed_info{
+    display: flex;
+}
+
+#uptime{
+    margin-bottom: 10px;
+}
+
+#selected_node{
+    margin-left: 25px;
+}
+
+#detailed_overview > div > p, #detailed_overview > p{
+    margin: 0px;
+}
+
+#detailed_overview{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0px 10px;
+}
+.total_mem{
+    border-bottom: 1px solid;
+    overflow: hidden;
+    float: right;
+}
+
+.detailed_value_mem{
+    display: block ruby;
+}
+
+.detailed_value{
+    float: right;
+}
