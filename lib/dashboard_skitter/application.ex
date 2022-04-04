@@ -20,6 +20,13 @@ defmodule DashboardSkitter.Application do
                                     components: [],
                                     start_time: 0,
                                     isStarted: false}},
+      {DashboardSkitter.Logs, %{
+        counter: 0,
+        logs: %{}
+      }}
+    ]
+
+    children_master = [
       # Start the PubSub system
       {Phoenix.PubSub, name: DashboardSkitter.PubSub},
       # Start the Endpoint (http/https)
@@ -35,7 +42,12 @@ defmodule DashboardSkitter.Application do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: DashboardSkitter.Supervisor]
-    Supervisor.start_link(children, opts)
+    Logger.add_backend(DashboardSkitter.CustomLogger)
+    if Skitter.Runtime.mode() == :local || Skitter.Runtime.mode() == :master do
+      Supervisor.start_link(List.flatten([children | children_master]), opts)
+    else
+      Supervisor.start_link(children, opts)
+    end
   end
 
   # Tell Phoenix to update the endpoint configuration

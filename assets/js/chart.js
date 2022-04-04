@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import 'c3/c3.min.css'
 import * as clusterNodes from "./cluster_nodes.js"
 
+let visible = true;
 let cpuUsage = ['Cpu usage'];
 let memUsage = ['Memory Usage'];
 let xAxis = ['x'];
@@ -77,12 +78,13 @@ function addSinglePoint(cpu, mem, time){
 }
 
 function refreshChart(chart, xAxis, yAxis){
-    chart.load({
-        columns: [
-            xAxis,
-            yAxis
-        ]
-    });
+    if(visible)
+        chart.load({
+            columns: [
+                xAxis,
+                yAxis
+            ]
+        });
 }
 
 function loadDataSet(points){
@@ -110,4 +112,8 @@ function addTimePoint(time){
     clusterNodes.addPointToArray(xAxis, new Date(time*1000), removeSecond);
 }
 
-export {addSinglePoint, loadDataSet}
+function changeVisibility(boo){
+    visible = boo;
+}
+
+export {addSinglePoint, loadDataSet, changeVisibility}

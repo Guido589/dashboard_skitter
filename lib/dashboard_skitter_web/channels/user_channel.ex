@@ -11,6 +11,7 @@ defmodule DashboardSkitterWeb.UserChannel do
     def handle_info(:after_join, socket) do
       workflow = DashboardSkitter.Workflow.get_state(:workflow)
       info = Map.put(workflow, :cluster_nodes, DashboardSkitter.SystemMetrics.get_state())
+      info = Map.put(info, :logs, DashboardSkitter.Logs.get_state())
       push(socket, "initialize", %{reply: info})
       {:noreply, socket}
     end
@@ -37,5 +38,9 @@ defmodule DashboardSkitterWeb.UserChannel do
 
     def update_metrics(bdy) do
       DashboardSkitterWeb.Endpoint.broadcast(@channel_name, "update_metrics", %{msg: bdy})
+    end
+
+    def add_log(bdy) do
+      DashboardSkitterWeb.Endpoint.broadcast(@channel_name, "add_log", %{msg: bdy})
     end
 end

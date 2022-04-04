@@ -1,0 +1,14 @@
+#console_msg > div > p {
+    margin: 0px;
+}
+
+#console_msg{
+    overflow: auto;
+    height: 250px;
+    margin-bottom: 20px;
+    border: black solid 1px;
+}
+
+.log_entry{
+    margin: 10px 5px;
+}

@@ -6,10 +6,20 @@ import {Socket} from "phoenix"
 import * as graph from "./graph.js"
 import * as clusterNodes from "./cluster_nodes.js"
 import {initializeStartTime, started} from "./time.js"
+import { changeVisibility } from "./chart.js"
+import {addInfo, updateInfo} from "./console.js"
 
 // And connect to the path in "lib/dashboard_skitter_web/endpoint.ex". We pass the
 // token for authentication. Read below how it should be used.
 let socket = new Socket("/socket", {params: {token: window.userToken}})
+
+document.addEventListener('visibilitychange', function (event){
+  if(document.hidden){
+    changeVisibility(false);
+  }else{
+    changeVisibility(true);
+  }
+})
 
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
@@ -71,6 +81,7 @@ channel.on("initialize", payload =>{
   const startTime = payload.reply.start_time;
   const isStarted = payload.reply.isStarted;
   const clusterNodesLi = [payload.reply.cluster_nodes];
+  const logs = payload.reply.logs.logs;
 
   graph.addNodes(graph.workersGraph, replyWorkers, workerFormatNode, workerFormatNode);
   graph.addNodes(graph.componentsGraph, replyComponents, componentFormatNode, componentGroup);
@@ -78,7 +89,7 @@ channel.on("initialize", payload =>{
   initializeEdgesComponents(replyComponents);
   clusterNodes.initializeClusterNodes(clusterNodesLi);
   initializeStartTime(startTime, isStarted);
-
+  addInfo(logs);
 })
 
 channel.on("started", payload =>{
@@ -115,10 +126,15 @@ channel.on("update_metrics", payload =>{
   const metric = msg.metric;
   const name = msg.name;
   const detailedMem = msg.detailed_mem;
+  const consoleMsg = msg.log;
   clusterNodes.showStats(metric.cpu, metric.mem, name);
   clusterNodes.addMetricToNode(metric.cpu, metric.mem, metric.time, name);
   clusterNodes.addDetailedOverview(name, metric.mem, detailedMem);
 })
+
+channel.on("add_log", payload =>{
+  updateInfo(payload.msg);
+});
 
 function templateWorkers(name, id){
   return name + " ("+id+")";

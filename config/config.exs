@@ -11,7 +11,7 @@ config :skitter,
   telemetry: true
 
 # Configures the endpoint
-config :dashboard_skitter, DashboardSkitterWeb.Endpoint,
+config :dashboard_skitter, DashboardSkitterWeb.Endpoint, server: true,
   url: [host: "localhost"],
   render_errors: [view: DashboardSkitterWeb.ErrorView, accepts: ~w(html json), layout: false],
   pubsub_server: DashboardSkitter.PubSub,
@@ -27,11 +27,10 @@ config :esbuild,
     env: %{"NODE_PATH" => Path.expand("../deps", __DIR__)}
   ]
 
-# Configures Elixir's Logger
-config :logger, :console,
-  format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id]
-
+  config :logger, 
+  backends: [:console],
+  format: "$time $metadata[$level] $message\n"
+  
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
