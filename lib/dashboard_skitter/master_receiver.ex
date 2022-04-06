@@ -18,6 +18,7 @@ defmodule DashboardSkitter.MasterReceiver do
 
     def handle_info({:add_log, bdy}, arg) do
         DashboardSkitter.Logs.add_log(bdy)
+        Updates.add_log(bdy)
         {:noreply, arg} 
     end
 

@@ -38,7 +38,7 @@ function addEntry(value){
   logEntry.classList.add("log_entry");
   const p = document.createElement('p');
   const p2 = document.createElement('p');
-  p.innerHTML =">> " + time_format(value.hour, value.min, value.sec, value.msec) +
+  p.innerHTML ="&#8811 " + time_format(value.hour, value.min, value.sec, value.msec) +
     " [" + value.erl_level + "] " + " [" + value.name + "]";
   p2.innerHTML = processeMsgConsole(value.msg);
   logEntry.appendChild(p);
