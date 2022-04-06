@@ -10,6 +10,8 @@ let xAxis = ['x'];
 const cpuChart = createChart("chart_cpu", 'CPU usage (%)', cpuUsage, "%");
 const memChart = createChart("chart_mem", 'Memory usage (MB)', memUsage, " MB");
 
+//Creates a chart with the given name, this name needs to be the same as an id in an HML element.
+//The text is the text that is written on the Y axis
 function createChart(name, text, yAxis, unit){
     let chart = c3.generate({
         bindto: '#' + name,
@@ -69,6 +71,7 @@ function createChart(name, text, yAxis, unit){
     return chart;
 }
 
+//Adds a single point to the two charts
 function addSinglePoint(cpu, mem, time){
     addPointToChart(cpu, cpuUsage);
     addPointToChart(mem, memUsage);
@@ -77,6 +80,7 @@ function addSinglePoint(cpu, mem, time){
     refreshChart(memChart, xAxis, memUsage);
 }
 
+//Refreshes the chart after adding data to it and only do this if the chart is visible
 function refreshChart(chart, xAxis, yAxis){
     if(visible)
         chart.load({
@@ -87,6 +91,14 @@ function refreshChart(chart, xAxis, yAxis){
         });
 }
 
+//Resets the charts so a new data set can be added
+function reset(){
+    cpuUsage = cpuUsage.slice(0, 1);
+    memUsage = memUsage.slice(0, 1);
+    xAxis = xAxis.slice(0, 1);
+}
+
+//Loads a datat set into the two charts
 function loadDataSet(points){
     const cpuPoints = points.cpu;
     const memPoints = points.mem;
@@ -103,17 +115,23 @@ function loadDataSet(points){
     refreshChart(memChart, xAxis, memUsage);
 }
 
+//Adds a point to the chart array, but if the array is longer than maximum points
+//it needs to remove the second element
 function addPointToChart(val, ar){
     removeSecond = (ar) => ar.splice(1,1);
     clusterNodes.addPointToArray(ar, val, removeSecond)
 }
 
+//Adds a time point
 function addTimePoint(time){
+    removeSecond = (ar) => ar.splice(1,1);
     clusterNodes.addPointToArray(xAxis, new Date(time*1000), removeSecond);
 }
 
+//Changes if the page is currently visible or not, if it isn't visible the charts
+//don't need to be updated or the site will crash.
 function changeVisibility(boo){
     visible = boo;
 }
 
-export {addSinglePoint, loadDataSet, changeVisibility}
+export {addSinglePoint, loadDataSet, changeVisibility, reset}

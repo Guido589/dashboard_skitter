@@ -4,11 +4,16 @@
 
 #console_msg{
     overflow: auto;
-    height: 250px;
-    margin-bottom: 20px;
+    height: 550px;
+    margin-bottom: 75px;
     border: black solid 1px;
+    border-radius: 15px;
 }
 
 .log_entry{
     margin: 10px 5px;
+}
+
+.log_entry > p{
+    white-space: break-spaces;
 }

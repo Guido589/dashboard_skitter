@@ -6,21 +6,19 @@ defmodule DashboardSkitter.CustomLogger do
         {:ok, %{name: :error_log}}
     end
     
-    def handle_event(info, state) do
-        erl_level = elem(elem(info, 2), 3)[:erl_level]
+    def handle_event({_, _, {_, msg, {_, {h, m, sec, msec}}, meta}}, state) do
+        erl_level = meta[:erl_level]
         
         if erl_level != :notice do
-            if elem(elem(info, 2), 3)[:application] != :phoenix do
-                IO.inspect info
-                msg = elem(elem(info, 2), 1)
-                time = elem(elem(elem(info, 2), 2), 1)
+            if meta[:application] != :phoenix do
                 bdy = %{
                     erl_level: erl_level,
                     msg: msg,
-                    hour: elem(time, 0),
-                    min: elem(time, 1),
-                    sec: elem(time, 2),
-                    msec: elem(time, 3),
+                    name: Skitter.Remote.self(),
+                    hour: h,
+                    min: m,
+                    sec: sec,
+                    msec: msec,
                 }
                 DashboardSkitter.Logs.add_log(bdy)
                 Updates.add_log(bdy)

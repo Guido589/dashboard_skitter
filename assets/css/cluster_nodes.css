@@ -1,4 +1,4 @@
-.nodes > p, .nodes > h3{
+.nodes > p, .nodes > div > h3{
     margin: 0px 5px;
 }
 
@@ -86,4 +86,22 @@
 
 .detailed_value{
     float: right;
+}
+
+.node_title{
+    display: block ruby;
+}
+
+.check_mark{
+    float: right;
+    scale: 1.5;
+    margin-right: 10px;
+    margin-bottom: 0px;
+}
+
+#check_mark_legend{
+    scale: 1.5;
+    margin-right: 10px;
+    margin-bottom: 0px;
+    padding-bottom: 8px;
 }

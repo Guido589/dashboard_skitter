@@ -42,15 +42,9 @@ defmodule DashboardSkitter.Workflow do
     {:noreply, new_map}
   end
 
-  def handle_call(:nr_nodes, _from, li) do
-    {:reply, Enum.count(li), li} 
-  end
-
   def add_node(genServer, node, location) do GenServer.cast(genServer, {:add_node, node, location}) end
 
   def add_recipient(genServer, from, to, send_fn, location) do GenServer.cast(genServer, {:add_recipient, from, to, send_fn, location})end
-
-  def amount_nodes(genServer) do GenServer.call(genServer, :nr_nodes) end
 
   def update_start_time(genServer, start_time) do GenServer.cast(genServer, {:update_start_time, start_time}) end
 

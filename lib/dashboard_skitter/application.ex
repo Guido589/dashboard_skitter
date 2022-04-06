@@ -10,11 +10,12 @@ defmodule DashboardSkitter.Application do
     children = [
       # Start the Telemetry supervisor
       DashboardSkitterWeb.Telemetry,
-      {DashboardSkitter.SystemMetrics, %{
-        name: "Root",
+      {DashboardSkitter.SystemMetrics, Map.put(%{}, Skitter.Remote.self(),
+      %{
         metrics: :queue.new(),
-        detailed_mem: []
-      }},
+        detailed_mem: [],
+        mode: Skitter.Runtime.mode
+      })},
       {DashboardSkitter.Workflow, %{
                                     workers: [], 
                                     components: [],
@@ -27,6 +28,8 @@ defmodule DashboardSkitter.Application do
     ]
 
     children_master = [
+      # Start the receiver in de master node
+      {DashboardSkitter.MasterReceiver, []},
       # Start the PubSub system
       {Phoenix.PubSub, name: DashboardSkitter.PubSub},
       # Start the Endpoint (http/https)

@@ -10,19 +10,16 @@ defmodule DashboardSkitter.TeleHandler do
       [:skitter, :runtime, :deploy]
     ]
     :telemetry.attach_many("dummy", events, &__MODULE__.handle_event/4, nil)
-
   end
 
   def handle_event([:skitter, :worker, :init], _, %{context: ctx, pid: pid}, _config) do
     name = Skitter.Runtime.node_name_for_context(ctx)
-    IO.puts "Server #{name}"
     worker = %{name: name, id: inspect(pid), to: MapSet.new() }
     Workflow.add_node(:workflow, worker, :workers)
     Updates.update_workers(worker)
   end
 
   def handle_event([:skitter, :worker, :send], _, %{from: from, to: to}, _config) do
-    IO.puts "Server FROM #{inspect from} TO #{inspect to}"
     send_fn = fn(from, to) -> Updates.update_edges_workers(%{from: from, to: to}) end
     Workflow.add_recipient(:workflow, inspect(from), inspect(to), send_fn, :workers)
   end
@@ -32,15 +29,15 @@ defmodule DashboardSkitter.TeleHandler do
     nodes = wf.nodes
 
     Enum.each(nodes, fn {componentKey, componentInfo} ->
-       component = %{name: componentInfo.component, id: componentKey, to: MapSet.new() }
+       component = %{name: componentInfo.component, id: componentKey, to: MapSet.new()}
        Workflow.add_node(:workflow, component, :components)
-        Updates.update_components(component)
-        get_links(componentKey, componentInfo.links) 
+       Updates.update_components(component)
+       get_links(componentKey, componentInfo.links) 
       end)
 
     Workflow.update_started(:workflow, true)
     Updates.started(initialize_start_time())
-    end
+  end
 
   def get_links(from, links) do
     Enum.map(links, fn {_,v} ->      

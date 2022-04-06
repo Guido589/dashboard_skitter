@@ -16,5 +16,8 @@ end #|> Skitter.Runtime.deploy(wf)
 
 Skitter.Dot.render_to_file(wf)
 
-# iex -S mix phx.server
+# iex -S mix
 # Skitter.Runtime.deploy(wf)
+
+#iex --sname worker -S mix skitter.worker
+#iex --sname master -S mix skitter.master worker@MacBook-Pro-van-Guido

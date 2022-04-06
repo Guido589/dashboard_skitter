@@ -18,6 +18,7 @@ let options = {
     rankDir: 'LR'
 }
 
+//Changes the color of the nodes that where selected to highlight them
 function changeColorNodes(graph, color, target){
     const nodes = graph.nodes();
     for (let i = 0; i < nodes.length; i++) {
@@ -27,6 +28,7 @@ function changeColorNodes(graph, color, target){
     }
 }
 
+//Resets the color back to white to remove the highlight
 function resetColor(graph){
     const nodes = graph.nodes();
     for (let i = 0; i < nodes.length; i++) {
@@ -34,11 +36,15 @@ function resetColor(graph){
     }
 }
 
+//Invokes the reset procedure for both graphs because the highlight
+//is applied to both of them
 function resetColorsGraphs(){
     resetColor(componentsGraph);
     resetColor(workersGraph);
 }
 
+//Creates a graph for the given name, this name needs to be the same
+//as an id in the HTML DOM tree
 function createGraph(name){
     var cy = cytoscape({
         container: document.querySelector('#'+name),
@@ -93,6 +99,9 @@ function createGraph(name){
     return cy;
 }
 
+//Adds nodes for the given graph, the componentGroup indicates too which
+//component group the workers belong. This is used to highlight the correct
+//nodes
 function addNodes(graph, nodes, textFormat, componentGroup) {
     for (let idx = 0; idx < nodes.length; idx++) {
         const curNode = nodes[idx];
@@ -111,6 +120,7 @@ function addNodes(graph, nodes, textFormat, componentGroup) {
     graph.fit(graph.nodes);
 }
 
+//Adds edges for the source to the targets into the graph.
 function addEdges(graph, source, targets) {
     for (let idx = 0; idx < targets.length; idx++) {
         const target = targets[idx];

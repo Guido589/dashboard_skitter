@@ -5,9 +5,9 @@
 import {Socket} from "phoenix"
 import * as graph from "./graph.js"
 import * as clusterNodes from "./cluster_nodes.js"
-import {initializeStartTime, started} from "./time.js"
-import { changeVisibility } from "./chart.js"
-import {addInfo, updateInfo} from "./console.js"
+import * as time from "./time.js"
+import * as chart from "./chart.js"
+import * as console_dash from "./console.js"
 
 // And connect to the path in "lib/dashboard_skitter_web/endpoint.ex". We pass the
 // token for authentication. Read below how it should be used.
@@ -15,9 +15,9 @@ let socket = new Socket("/socket", {params: {token: window.userToken}})
 
 document.addEventListener('visibilitychange', function (event){
   if(document.hidden){
-    changeVisibility(false);
+    chart.changeVisibility(false);
   }else{
-    changeVisibility(true);
+    chart.changeVisibility(true);
   }
 })
 
@@ -74,99 +74,84 @@ channel.join()
   .receive("ok", resp => { console.log("Joined successfully", resp) })
   .receive("error", resp => { console.log("Unable to join", resp) })
 
+// Initialize the dashboard after joining the channel
 channel.on("initialize", payload =>{
   console.log("Received initialization: ", payload.reply)
   const replyWorkers = payload.reply.workers;
   const replyComponents = payload.reply.components;
   const startTime = payload.reply.start_time;
   const isStarted = payload.reply.isStarted;
-  const clusterNodesLi = [payload.reply.cluster_nodes];
+  const clusterNodesObj = payload.reply.cluster_nodes;
   const logs = payload.reply.logs.logs;
 
+  //Add nodes to both graphs
   graph.addNodes(graph.workersGraph, replyWorkers, workerFormatNode, workerFormatNode);
   graph.addNodes(graph.componentsGraph, replyComponents, componentFormatNode, componentGroup);
-  initializeEdgesWorkers(replyWorkers);
-  initializeEdgesComponents(replyComponents);
-  clusterNodes.initializeClusterNodes(clusterNodesLi);
-  initializeStartTime(startTime, isStarted);
-  addInfo(logs);
+  //Add edges between the nodes in both graphs
+  initializeEdgesNodes(replyWorkers, graph.workersGraph);
+  initializeEdgesNodes(replyComponents, graph.componentsGraph);
+  //Initialize the detailed info for the cluster nodes
+  clusterNodes.initializeClusterNodes(clusterNodesObj);
+  time.initializeStartTime(startTime, isStarted);
+  console_dash.addInfo(logs);
 })
 
+//Starts the timer when it receives a message that the workflow is started
 channel.on("started", payload =>{
-  started(payload.msg);
+  time.started(payload.msg);
 })
 
+//Handles the message to add a new node the workers graph
 channel.on("update_workers", payload =>{
   console.log("Received update worker: ", payload);
   let msg = payload.msg;
-  addElemenToList("workers", templateWorkers(msg.name, msg.id));
   graph.addNodes(graph.workersGraph, [msg], workerFormatNode, workerFormatNode);
 })
 
+//Handles the message to add a new edge the workers graph
 channel.on("update_edges_workers", payload =>{
   console.log("Received update workers edge: ", payload);
   let msg = payload.msg;
-  addElemenToList("edges", templateEdges(msg.from, msg.to));
   graph.addEdges(graph.workersGraph, msg.from, [msg.to]);
 })
 
+//Handles the message to add a new node the workflow graph
 channel.on("update_components", payload =>{
   console.log("Received update components: ", payload);
   graph.addNodes(graph.componentsGraph, [payload.msg], componentFormatNode, componentGroup);
 })
 
+//Handles the message to add a edge node the workflow graph
 channel.on("update_edges_components", payload =>{
   console.log("Received update components edge: ", payload);
   let msg = payload.msg;
   graph.addEdges(graph.componentsGraph, msg.from, [msg.to]);
 })
 
+//Handles the message to update the metrics
 channel.on("update_metrics", payload =>{
   const msg = payload.msg;
   const metric = msg.metric;
   const name = msg.name;
   const detailedMem = msg.detailed_mem;
-  const consoleMsg = msg.log;
   clusterNodes.showStats(metric.cpu, metric.mem, name);
   clusterNodes.addMetricToNode(metric.cpu, metric.mem, metric.time, name);
   clusterNodes.addDetailedOverview(name, metric.mem, detailedMem);
 })
 
+//Handles the message to add a new log in the console
 channel.on("add_log", payload =>{
-  updateInfo(payload.msg);
+  console_dash.addLog(payload.msg);
 });
 
-function templateWorkers(name, id){
-  return name + " ("+id+")";
-}
-
-function templateEdges(from, to){
-  return "from " + from + " to "+to;
-}
-
-function addElemenToList(elementId, listItem){
-  var el = document.getElementById(elementId);
-  var li = document.createElement("li");
-  li.appendChild(document.createTextNode(listItem));
-  el.appendChild(li);
-}
-
-function initializeEdgesComponents(components){
-  components.forEach((component) =>{
-    graph.addEdges(graph.componentsGraph, component.id, component.to);
+//Loops over each component/worker and takes the destinations of the edges out
+function initializeEdgesNodes(nodes, graphNode){
+  nodes.forEach((node) =>{
+    graph.addEdges(graphNode, node.id, node.to);
   });
 }
 
-function initializeEdgesWorkers(workers){
-  workers.forEach((worker) =>{
-    worker.to.forEach((to) =>{
-      addElemenToList("edges", templateEdges(worker.id, to));
-    });
-    graph.addEdges(graph.workersGraph, worker.id, worker.to);
-    addElemenToList("workers", templateWorkers(worker.name, worker.id));
-  });
-}
-
+//Formatters to show the correct label on the nodes of a graph
 function componentFormatNode(node){
   return node.id + "\n" + node.name;
 }
