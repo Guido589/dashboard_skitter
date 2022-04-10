@@ -10,6 +10,6 @@ defmodule DashboardSkitter.SendUpdateBehaviour do
     # System metrics
     @callback update_metrics(bdy :: map) :: nil
 
-    #Logger
+    # Logger
     @callback add_log(bdy :: map) :: nil
 end

@@ -24,6 +24,8 @@
     width: 12px;
     height: 12px;
     border-radius: 2px;
+    margin-top: 7px;
+    margin-right: 5px;
 }
 
 #rect1{
@@ -39,18 +41,18 @@
 }
 
 #node_legend{
-    display: block ruby;
+    display: flex;
     margin-top: 10px;
     margin-bottom: 10px;
 }
 
 #node_legend > div > p, #node_legend > p{
-    margin: 0px;
+    margin-bottom: 0px;
 }
 
 .legend_el{
     margin: 0px 10px;
-    display: block ruby;
+    display: flex;
 }
 
 #detailed_info{
@@ -80,28 +82,25 @@
     float: right;
 }
 
-.detailed_value_mem{
-    display: block ruby;
-}
-
 .detailed_value{
     float: right;
 }
 
 .node_title{
-    display: block ruby;
+    display: flex;
 }
 
 .check_mark{
-    float: right;
-    scale: 1.5;
-    margin-right: 10px;
+    transform: scale(1.5);
+    margin-left: auto;
     margin-bottom: 0px;
+    margin-right: 5px;
+    height: 30px;
 }
 
 #check_mark_legend{
-    scale: 1.5;
-    margin-right: 10px;
+    transform: scale(1.5);
+    margin-right: 5px;
     margin-bottom: 0px;
     padding-bottom: 8px;
 }

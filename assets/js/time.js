@@ -1,12 +1,12 @@
-let start_time = 0;
+let startTime = 0;
 let isStarted = false;
 const oneDayInSec = 86400;
 
 //Initializes the start time received from the socket
-function initializeStartTime(start_time_workflow, isStartedWorkflow){
+function initializeStartTime(startTimeWorkflow, isStartedWorkflow){
     isStarted = isStartedWorkflow;
     if(isStarted){
-        start_time = start_time_workflow;
+        startTime = startTimeWorkflow;
         update();
     }
 }
@@ -21,14 +21,14 @@ function updateTime(){
 
 //Updates the boolean isStarted so the counter can start
 function started(time){
-    start_time = time;
+    startTime = time;
     isStarted = true;
 }
 
 //Updates the timer by substracting the start time with the current time
 function update(){
     var curSeconds = new Date().getTime() / 1000;
-    totUptime = curSeconds - start_time;
+    totUptime = curSeconds - startTime;
     uptime = totUptime % oneDayInSec;
     let d = Math.floor(totUptime / oneDayInSec).toString();
     let h = Math.floor(uptime / 3600).toString();

@@ -1,28 +1,28 @@
 import * as chart from "./chart.js"
 
-let cluster_nodes = [];
-let max_amount_points = 300;
+let clusterNodes = [];
+let maxAmountPoints = 300;
 let selectedNode = "";
 const gigInBytes = 1073741824;
 
-//Receives all of the workers in a cluster and creates an entry in the cluster_nodes
+//Receives all of the workers in a cluster and creates an entry in the clusterNodes
 //array for each one. It also selects the selectedNode if it is a master or a local node.
 function initializeClusterNodes(obj){
     for (const [name, el] of Object.entries(obj)) {
             const metrics  = el.metrics[1].concat(el.metrics[0].reverse());
             const detailedMem = el.detailed_mem;
-            const cpu_val = [];
-            const mem_val = [];
+            const cpuVal = [];
+            const memVal = [];
             const time = [];
             if(el.mode === "master" || el.mode === "local"){
                 selectedNode = name;
             }
             createNode(name);
             metrics.forEach(element => {
-                cpu_val.push(element.cpu);
+                cpuVal.push(element.cpu);
             });
             metrics.forEach(element => {
-                mem_val.push(element.mem);
+                memVal.push(element.mem);
             });
             metrics.forEach(element => {
                 time.push(element.time);
@@ -30,12 +30,12 @@ function initializeClusterNodes(obj){
 
             obj = {
                 name: name,
-                cpu: cpu_val,
-                mem: mem_val,
+                cpu: cpuVal,
+                mem: memVal,
                 detailedMem: detailedMem,
                 time: time
             }
-            cluster_nodes.push(obj)
+            clusterNodes.push(obj)
     
             if(name === selectedNode){
                 chart.loadDataSet(obj);
@@ -48,17 +48,17 @@ function initializeClusterNodes(obj){
 //The ids for the HTML elements are i.e. name + _node so that if we need to update
 //the value in the future we can retrieve it with the unique name
 function createNode(name){
-    const cluster_nodes_div = document.getElementById("cluster_nodes");
+    const clusterNodesDiv = document.getElementById("cluster_nodes");
     const div = document.createElement('div');
     div.onclick = (target) =>{
         if(name !== selectedNode){
-            const check_mark = document.getElementById(selectedNode + "_check_mark");
-            const clicked_check_mark = document.getElementById(name + "_check_mark");
+            const checkMark = document.getElementById(selectedNode + "_check_mark");
+            const clickedCheckMark = document.getElementById(name + "_check_mark");
             selectedNode = name;
             chart.reset();
-            check_mark.style.visibility = "hidden";
-            clicked_check_mark.style.visibility = "visible";
-            obj = cluster_nodes.find(el => el.name === selectedNode);
+            checkMark.style.visibility = "hidden";
+            clickedCheckMark.style.visibility = "visible";
+            obj = clusterNodes.find(el => el.name === selectedNode);
             changeSelectedNodeInfo(name, obj.mem.slice(-1), obj.detailedMem)
             chart.loadDataSet(obj);
         }
@@ -87,7 +87,7 @@ function createNode(name){
     memory.setAttribute('id', name + '_memory');
     div.appendChild(cpu);
     div.appendChild(memory);
-    cluster_nodes_div.appendChild(div);
+    clusterNodesDiv.appendChild(div);
 }
 
 //Edits the HTML DOM tree to update the selected node detailed overview next
@@ -112,12 +112,12 @@ function changeSelectedNodeInfo(name, memVal, detailedMem){
       }
 }
 
-//Updates the detailed overview for the given name in the cluster_nodes array and
+//Updates the detailed overview for the given name in the clusterNodes array and
 //if that node is the selected node, the info next to the chart also needs to be
 //updated
 function addDetailedOverview(name, memVal, detailedMem){
-    for (let i = 0; i < cluster_nodes.length; i++) {
-        const el = cluster_nodes[i];
+    for (let i = 0; i < clusterNodes.length; i++) {
+        const el = clusterNodes[i];
         if(el.name === name){
             el.detailedMem = detailedMem;
         }
@@ -131,17 +131,17 @@ function addDetailedOverview(name, memVal, detailedMem){
 //Adds a value to the array but it first checks if it isn't getting longer than
 //the maximum length
 function addPointToArray(ar, val, removeFunc){
-    if(ar.length > max_amount_points){
+    if(ar.length > maxAmountPoints){
         removeFunc(ar);
     }
     ar.push(val);
 }
 
-//Searches for the name in the cluser_nodes array and adds to the array the different values,
+//Searches for the name in the cluserNodes array and adds to the array the different values,
 //if the name is the value that is currently selected it adds the values to the chart
 function addMetricToNode(cpu, mem, time, name){
-    for (let i = 0; i < cluster_nodes.length; i++) {
-        const el = cluster_nodes[i];
+    for (let i = 0; i < clusterNodes.length; i++) {
+        const el = clusterNodes[i];
         if(el.name === name){
             removeFirst = (ar) => ar.shift();
             addPointToArray(el.cpu, cpu, removeFirst);
@@ -157,7 +157,7 @@ function addMetricToNode(cpu, mem, time, name){
 
 //Edits the HTML DOM tree of the node to the new updated values
 function showStats(cpu, mem, name){
-    if(cluster_nodes.some(el =>{if (el.name === name) return true})){
+    if(clusterNodes.some(el =>{if (el.name === name) return true})){
         document.getElementById(name + "_cpu").innerHTML = "CPU usage: " + cpu + "%";
         if(mem < gigInBytes){
           document.getElementById(name + "_memory").innerHTML = "Memory usage: " + mem + " MB";
@@ -175,4 +175,4 @@ function showStats(cpu, mem, name){
     }
 }
 
-export {initializeClusterNodes, cluster_nodes, addMetricToNode, addPointToArray, showStats, addDetailedOverview}
+export {initializeClusterNodes, clusterNodes, addMetricToNode, addPointToArray, showStats, addDetailedOverview}

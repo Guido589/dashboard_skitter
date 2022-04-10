@@ -38,7 +38,7 @@ function addEntry(value){
   logEntry.classList.add("log_entry");
   const p = document.createElement('p');
   const p2 = document.createElement('p');
-  p.innerHTML ="&#8811 " + time_format(value.hour, value.min, value.sec, value.msec) +
+  p.innerHTML ="&#8811 " + timeFormat(value.hour, value.min, value.sec, value.msec) +
     " [" + value.erl_level + "] " + " [" + value.name + "]";
   p2.innerHTML = processeMsgConsole(value.msg);
   logEntry.appendChild(p);
@@ -47,7 +47,7 @@ function addEntry(value){
 }
 
 //Creates the correct time format for the time that is written next to a console message
-function time_format(hour, minute, sec, msec){
+function timeFormat(hour, minute, sec, msec){
   return hour.toString().padStart(2, '0')+
     ":"+minute.toString().padStart(2, '0')+
     ":"+sec.toString().padStart(2, '0')+
@@ -57,18 +57,18 @@ function time_format(hour, minute, sec, msec){
 //The message of a console consists of strings, array of strings and ASCII values. This procedure
 //creates from this array a string of the message
 function processeMsgConsole(msg){
-  cur_res = "";
+  curRes = "";
   if (Array.isArray(msg)){
     msg.forEach(el => {
       if(Number.isInteger(el)){
-        cur_res += String.fromCharCode(el)
+        curRes += String.fromCharCode(el)
       }else if (Array.isArray(el)){
-        cur_res += processeMsgConsole(el);
+        curRes += processeMsgConsole(el);
       }else{
-        cur_res += " " + el;
+        curRes += " " + el;
       }
     });
-    return cur_res;
+    return curRes;
   }else{
     return msg;
   }

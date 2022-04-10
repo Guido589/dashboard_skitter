@@ -20,7 +20,9 @@ defmodule DashboardSkitter.CustomLogger do
                     sec: sec,
                     msec: msec,
                 }
-                DashboardSkitter.Logs.add_log(bdy)
+                if(Skitter.Runtime.mode != :worker) do
+                    DashboardSkitter.Logs.add_log(bdy)
+                end
                 Updates.add_log(bdy)
             end
         end

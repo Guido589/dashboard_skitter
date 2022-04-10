@@ -7,7 +7,7 @@ import * as graph from "./graph.js"
 import * as clusterNodes from "./cluster_nodes.js"
 import * as time from "./time.js"
 import * as chart from "./chart.js"
-import * as console_dash from "./console.js"
+import * as consoleDash from "./console.js"
 
 // And connect to the path in "lib/dashboard_skitter_web/endpoint.ex". We pass the
 // token for authentication. Read below how it should be used.
@@ -93,7 +93,7 @@ channel.on("initialize", payload =>{
   //Initialize the detailed info for the cluster nodes
   clusterNodes.initializeClusterNodes(clusterNodesObj);
   time.initializeStartTime(startTime, isStarted);
-  console_dash.addInfo(logs);
+  consoleDash.addInfo(logs);
 })
 
 //Starts the timer when it receives a message that the workflow is started
@@ -141,7 +141,7 @@ channel.on("update_metrics", payload =>{
 
 //Handles the message to add a new log in the console
 channel.on("add_log", payload =>{
-  console_dash.addLog(payload.msg);
+  consoleDash.addLog(payload.msg);
 });
 
 //Loops over each component/worker and takes the destinations of the edges out
