@@ -24,7 +24,7 @@ defmodule DashboardSkitter.MasterReceiver do
 
     def handle_info({:update_workers, bdy}, arg) do
         Workflow.add_node(:workflow, bdy, :workers)
-        Updates.update_workers(bdy)
+        Updates.update_workers(Map.put(bdy, :id, bdy.id))
         {:noreply, arg} 
     end
 

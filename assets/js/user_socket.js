@@ -85,7 +85,7 @@ channel.on("initialize", payload =>{
   const logs = payload.reply.logs.logs;
 
   //Add nodes to both graphs
-  graph.addNodes(graph.workersGraph, replyWorkers, workerFormatNode, workerFormatNode);
+  graph.addNodes(graph.workersGraph, replyWorkers, workerFormatNode, workerGroup);
   graph.addNodes(graph.componentsGraph, replyComponents, componentFormatNode, componentGroup);
   //Add edges between the nodes in both graphs
   initializeEdgesNodes(replyWorkers, graph.workersGraph);
@@ -105,7 +105,7 @@ channel.on("started", payload =>{
 channel.on("update_workers", payload =>{
   console.log("Received update worker: ", payload);
   let msg = payload.msg;
-  graph.addNodes(graph.workersGraph, [msg], workerFormatNode, workerFormatNode);
+  graph.addNodes(graph.workersGraph, [msg], workerFormatNode, workerGroup);
 })
 
 //Handles the message to add a new edge the workers graph
@@ -157,10 +157,14 @@ function componentFormatNode(node){
 }
 
 function workerFormatNode(node){
-  return node.name;
+  return node.name + "\n" + "Tag: " + node.tag;
 }
 
 function componentGroup(node){
   return node.id;
+}
+
+function workerGroup(node){
+  return node.name;
 }
 export default socket

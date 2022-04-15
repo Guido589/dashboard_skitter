@@ -105,7 +105,6 @@ function createGraph(name){
 function addNodes(graph, nodes, textFormat, componentGroup) {
     for (let idx = 0; idx < nodes.length; idx++) {
         const curNode = nodes[idx];
-
         const node = { 
             group: "nodes", 
             data: { 

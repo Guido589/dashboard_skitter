@@ -50,5 +50,7 @@ defmodule DashboardSkitter.Workflow do
 
   def update_started(genServer, boo) do GenServer.cast(genServer, {:update_started, boo}) end
 
-  def get_state(genServer) do :sys.get_state(genServer) end
+  def get_state(genServer) do 
+    :sys.get_state(genServer)
+  end
 end
