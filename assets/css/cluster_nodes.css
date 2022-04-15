@@ -63,10 +63,6 @@
     margin-bottom: 10px;
 }
 
-#selected_node{
-    margin-left: 25px;
-}
-
 #detailed_overview > div > p, #detailed_overview > p{
     margin: 0px;
 }
