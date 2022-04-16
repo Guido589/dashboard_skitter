@@ -13,7 +13,6 @@ let options = {
     name: 'dagre',
     directed: true,
     grid: true,
-    nodeSep: 20,
     fit: true,
     maximal: true,
     rankDir: 'LR'
