@@ -1,6 +1,6 @@
 :root {
     --main-color: #f7c72a;
-    --hover-main-color: #bc9b2e;
+    --hover-main-color: #fade80;
     --line-chart-color: #0169FA;
     --low-cpu-usage: var(--main-color);
     --medium-cpu-usage: #509cff;

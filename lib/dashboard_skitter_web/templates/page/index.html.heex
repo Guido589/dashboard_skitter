@@ -1,14 +1,21 @@
 <div class="outerContainer"> 
-  <div id="containerComponent" class="canvasContainer">  
-    <h2> Workflow graph </h2>
+  <div id="containerComponent" class="canvasContainer"> 
+    <div id="workflow_title"> 
+      <h2> Workflow graph </h2>
+    </div>
     <div id="componentGraph" class="graph"></div>
   </div>
 </div>
 
-<div class="outerContainer">
-  <div id="containerWorker" class="canvasContainer">  
-    <h2>Worker graph</h2>
-    <div id="workerGraph" class="graph"></div>
+<div id="containerWorker">  
+  <h2>Worker graph</h2>
+  <div id="worker_info">
+    <div id="containerGraphWorker">
+      <div id="workerGraph" class="graph"></div>
+    </div>
+    <div id="nodes_hover">
+      <h4 id="title_nodes">Hover over the different node names to see which node the worker created</h4>
+    </div>
   </div>
 </div>
 

@@ -21,6 +21,15 @@ document.addEventListener('visibilitychange', function (event){
   }
 })
 
+const workflowTitle = document.getElementById('workflow_title');
+const b = document.createElement('button')
+b.innerHTML = "Reset view"
+b.setAttribute('id', 'reset_button');
+b.onclick = (target) => {
+  graph.resetView();
+}
+workflowTitle.appendChild(b); 
+
 // When you connect, you'll often need to authenticate the client.
 // For example, imagine you have an authentication plug, `MyAuth`,
 // which authenticates the session and assigns a `:current_user`.

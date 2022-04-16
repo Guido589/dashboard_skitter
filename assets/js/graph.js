@@ -13,34 +13,35 @@ let options = {
     name: 'dagre',
     directed: true,
     grid: true,
+    nodeSep: 20,
     fit: true,
     maximal: true,
     rankDir: 'LR'
 }
 
 //Changes the color of the nodes that where selected to highlight them
-function changeColorNodes(graph, color, target){
+function changeColorNodes(graph, target, style, select){
     const nodes = graph.nodes();
     for (let i = 0; i < nodes.length; i++) {
-       if(nodes[i].data().component == target){
-            nodes[i].style({'background-color': color});
+       if(select(nodes[i].data()) == target){
+            nodes[i].style(style);
        }
     }
 }
 
 //Resets the color back to white to remove the highlight
-function resetColor(graph){
+function resetColor(graph, style){
     const nodes = graph.nodes();
     for (let i = 0; i < nodes.length; i++) {
-        nodes[i].style({'background-color': 'white'});
+        nodes[i].style(style);
     }
 }
 
 //Invokes the reset procedure for both graphs because the highlight
 //is applied to both of them
 function resetColorsGraphs(){
-    resetColor(componentsGraph);
-    resetColor(workersGraph);
+    resetColor(componentsGraph, {'background-color': 'white'});
+    resetColor(workersGraph, {'background-color': 'white'});
 }
 
 //Creates a graph for the given name, this name needs to be the same
@@ -77,8 +78,6 @@ function createGraph(name){
             nodes: [],
             edges: [],
         },
-        userZoomingEnabled: false,
-        userPanningEnabled: false,
         autoungrabify: true
     });
 
@@ -91,8 +90,9 @@ function createGraph(name){
             selectedNode = "";
         } else {
             resetColorsGraphs();
-            changeColorNodes(componentsGraph, selectNodeColor, targetCom);
-            changeColorNodes(workersGraph, selectNodeColor, targetCom);
+            const selectComponent = (el) => el.component;
+            changeColorNodes(componentsGraph, targetCom, {'background-color': selectNodeColor}, selectComponent);
+            changeColorNodes(workersGraph, targetCom, {'background-color': selectNodeColor}, selectComponent);
             selectedNode = targetCom;
         }
       });
@@ -110,13 +110,19 @@ function addNodes(graph, nodes, textFormat, componentGroup) {
             data: { 
                 id: curNode.id,
                 name: textFormat(curNode),
-                component: componentGroup(curNode)
+                component: componentGroup(curNode),
+                createdBy: curNode.created_in
             }
         };
         graph.add([node]); 
     }
     graph.makeLayout(options).run();
     graph.fit(graph.nodes);
+}
+
+function resetView(){
+    workersGraph.fit();
+    componentsGraph.fit();
 }
 
 //Adds edges for the source to the targets into the graph.
@@ -130,4 +136,4 @@ function addEdges(graph, source, targets) {
     graph.fit();
 }
 
-export {addNodes, addEdges, createGraph, workersGraph, componentsGraph}
+export {addNodes, resetView, resetColor, addEdges, createGraph, workersGraph, componentsGraph, changeColorNodes}

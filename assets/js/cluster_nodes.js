@@ -1,4 +1,5 @@
 import * as chart from "./chart.js"
+import * as graph from "./graph.js"
 
 let clusterNodes = [];
 let maxAmountPoints = 300;
@@ -28,6 +29,8 @@ function initializeClusterNodes(obj){
                 time.push(element.time);
             });
 
+            addNodeNameToGraphOptions(name);
+
             obj = {
                 name: name,
                 cpu: cpuVal,
@@ -41,6 +44,20 @@ function initializeClusterNodes(obj){
                 chart.loadDataSet(obj);
         }
     }
+}
+
+function addNodeNameToGraphOptions(name){
+    const div = document.getElementById("nodes_hover");
+    const p = document.createElement('p');
+    p.onmouseenter = (target) => {
+        const selectCreated = (el) => el.createdBy;
+        graph.changeColorNodes(graph.workersGraph, name, {'border-width': '5px', 'border-color': 'red'}, selectCreated);
+    }
+    p.onmouseleave = (target) => {
+        graph.resetColor(graph.workersGraph, {'border-width': '1px', 'border-color': 'black'});
+    }
+    p.innerHTML = name;
+    div.appendChild(p);
 }
 
 //Edits the DOM tree to add a rectangle with all of the information for that node
