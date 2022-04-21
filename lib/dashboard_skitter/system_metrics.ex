@@ -18,13 +18,19 @@ defmodule DashboardSkitter.SystemMetrics do
     end
 
     def select_mem_info(mem) do
+        atom = mem[:atom]
+        binary = mem[:binary]
+        code = mem[:code]
+        ets = mem[:ets]
+        processes = mem[:processes]
+        system = mem[:system]
         %{
-            Atoms: from_bytes_to_mb(mem[:atom]),
-            Binary: from_bytes_to_mb(mem[:binary]),
-            Code: from_bytes_to_mb(mem[:code]),
-            Ets: from_bytes_to_mb(mem[:ets]),
-            Processes: from_bytes_to_mb(mem[:processes]),
-            System: from_bytes_to_mb(mem[:system])
+            Atoms: from_bytes_to_mb(atom),
+            Binary: from_bytes_to_mb(binary),
+            Code: from_bytes_to_mb(code),
+            Ets: from_bytes_to_mb(ets),
+            Processes: from_bytes_to_mb(processes),
+            Other: from_bytes_to_mb(system - atom - binary - code - ets)
         }
     end
 
