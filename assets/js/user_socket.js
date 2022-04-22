@@ -23,10 +23,11 @@ document.addEventListener('visibilitychange', function (event){
 
 const workflowTitle = document.getElementById('workflow_title');
 const b = document.createElement('button')
-b.innerHTML = "Reset view"
+b.innerHTML = "Reset graphs view"
 b.setAttribute('id', 'reset_button');
 b.onclick = (target) => {
   graph.resetView();
+  graph.changeCheckbox();
 }
 workflowTitle.appendChild(b); 
 

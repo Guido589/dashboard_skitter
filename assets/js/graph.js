@@ -8,6 +8,7 @@ const componentsGraph = createGraph("componentGraph");
 const selectNodeColor = getComputedStyle(document.body).getPropertyValue('--main-color');
 
 let selectedNode = "";
+let refresh = true;
 
 let options = {
     name: 'dagre',
@@ -15,7 +16,46 @@ let options = {
     grid: true,
     fit: true,
     maximal: true,
-    rankDir: 'LR'
+    rankDir: 'LR',
+    nodeSep: 30
+}
+
+const checkbox = document.getElementById('checkbox');
+const input = document.createElement("INPUT");
+const p = document.createElement("p");
+input.setAttribute("type", "checkbox");
+input.checked = true;
+p.innerHTML = "Rerender graph"
+checkbox.appendChild(input);
+checkbox.appendChild(p);
+
+function disableRefresh(){
+    refresh = false;
+    input.checked = false;
+}
+
+workersGraph.on('pinchzoom', (event)=>{
+    disableRefresh();
+});
+
+workersGraph.on('scrollzoom', (event)=>{
+    disableRefresh();
+});
+
+workersGraph.on('dragpan', (event)=>{
+    disableRefresh();
+});
+
+
+input.addEventListener('input',(event) =>{
+    if(input.checked){
+        refresh = true;
+    }else refresh = false;
+    console.log("input");
+})
+
+function changeCheckbox(){
+    input.checked = true;
 }
 
 //Changes the color of the nodes that where selected to highlight them
@@ -102,8 +142,10 @@ function reloadLayout(graph){
     zoom = graph.zoom();
     pan = graph.pan();
     graph.makeLayout(options).run();
-    graph.zoom(zoom);
-    graph.pan(pan);
+    if(!refresh){
+        graph.zoom(zoom);
+        graph.pan(pan);
+    }
 }
 
 //Adds nodes for the given graph, the componentGroup indicates too which
@@ -141,4 +183,4 @@ function addEdges(graph, source, targets) {
     reloadLayout(graph);
 }
 
-export {addNodes, resetView, resetColor, addEdges, createGraph, workersGraph, componentsGraph, changeColorNodes}
+export {addNodes, resetView, resetColor, addEdges, changeCheckbox, createGraph, workersGraph, componentsGraph, changeColorNodes}
