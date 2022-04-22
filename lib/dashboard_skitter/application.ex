@@ -45,12 +45,12 @@ defmodule DashboardSkitter.Application do
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: DashboardSkitter.Supervisor]
-    Logger.add_backend(DashboardSkitter.CustomLogger)
     if Skitter.Runtime.mode() == :local || Skitter.Runtime.mode() == :master do
       Supervisor.start_link(List.flatten([children | children_master]), opts)
     else
       Supervisor.start_link(children, opts)
     end
+    Logger.add_backend(DashboardSkitter.CustomLogger)
   end
 
   # Tell Phoenix to update the endpoint configuration
