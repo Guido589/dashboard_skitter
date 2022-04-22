@@ -50,8 +50,8 @@ workersGraph.on('dragpan', (event)=>{
 input.addEventListener('input',(event) =>{
     if(input.checked){
         refresh = true;
+        reloadLayout(workersGraph);
     }else refresh = false;
-    console.log("input");
 })
 
 function changeCheckbox(){
@@ -89,6 +89,7 @@ function createGraph(name){
     var cy = cytoscape({
         container: document.querySelector('#'+name),
         layout: options,
+        wheelSensitivity: 0.65,
         style: cytoscape.stylesheet()
             .selector('node')
             .css({
