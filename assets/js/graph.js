@@ -98,6 +98,14 @@ function createGraph(name){
     return cy;
 }
 
+function reloadLayout(graph){
+    zoom = graph.zoom();
+    pan = graph.pan();
+    graph.makeLayout(options).run();
+    graph.zoom(zoom);
+    graph.pan(pan);
+}
+
 //Adds nodes for the given graph, the componentGroup indicates too which
 //component group the workers belong. This is used to highlight the correct
 //nodes
@@ -115,8 +123,7 @@ function addNodes(graph, nodes, textFormat, componentGroup) {
         };
         graph.add([node]); 
     }
-    graph.makeLayout(options).run();
-    graph.fit(graph.nodes);
+    reloadLayout(graph);
 }
 
 function resetView(){
@@ -131,8 +138,7 @@ function addEdges(graph, source, targets) {
         const idEdge = source.concat(target);
         graph.add([{ group: "edges", data: { id: idEdge, source: source, target: target } }]);
     }
-    graph.makeLayout(options).run();
-    graph.fit();
+    reloadLayout(graph);
 }
 
 export {addNodes, resetView, resetColor, addEdges, createGraph, workersGraph, componentsGraph, changeColorNodes}
