@@ -27,8 +27,8 @@ const workersGraph = createGraph(
         'background-color': '#fff',
         'font-size': '20em',
         'width': 'label',
-        'shape': 'roundrectangle',
-        'border-width': '10px',
+        'shape': 'rectangle',
+        'border-width': '40px',
         'border-color': 'black',
         'content': 'data(name)',
         'background-opacity': '0.85',
@@ -36,7 +36,6 @@ const workersGraph = createGraph(
         'text-halign': 'center',
         'text-wrap': 'wrap',
         'padding': '20em',
-        'border-radius': '10px'
     },
     {
         'width': '9px',

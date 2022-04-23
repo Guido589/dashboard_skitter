@@ -51,10 +51,10 @@ function addNodeNameToGraphOptions(name){
     const p = document.createElement('p');
     p.onmouseenter = (target) => {
         const selectCreated = (el) => el.createdBy;
-        graph.changeColorNodes(graph.workersGraph, name, {'border-width': '5px', 'border-color': 'red'}, selectCreated);
+        graph.changeColorNodes(graph.workersGraph, name, {'border-width': '50px', 'border-color': 'red'}, selectCreated);
     }
     p.onmouseleave = (target) => {
-        graph.resetColor(graph.workersGraph, {'border-width': '1px', 'border-color': 'black'});
+        graph.resetColor(graph.workersGraph, {'border-width': '40px', 'border-color': 'black'});
     }
     p.innerHTML = name;
     div.appendChild(p);
