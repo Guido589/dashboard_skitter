@@ -50,6 +50,8 @@ defmodule DashboardSkitter.Application do
     else
       Supervisor.start_link(children, opts)
     end
+    Enum.each(Skitter.Runtime.spawned_workflows(), fn wf -> 
+      DashboardSkitter.HandlerFunctions.create_workflow(wf) end)
     Logger.add_backend(DashboardSkitter.CustomLogger)
   end
 

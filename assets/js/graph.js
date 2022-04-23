@@ -25,7 +25,7 @@ const input = document.createElement("INPUT");
 const p = document.createElement("p");
 input.setAttribute("type", "checkbox");
 input.checked = true;
-p.innerHTML = "Rerender graph"
+p.innerHTML = "Rerender graph after adding elements"
 checkbox.appendChild(input);
 checkbox.appendChild(p);
 
@@ -83,6 +83,18 @@ function resetColorsGraphs(){
     resetColor(workersGraph, {'background-color': 'white'});
 }
 
+//Searches for the correct strategy name in the component graph
+function searchStrategy(name){
+    const nodes = componentsGraph.nodes();
+    for (let i = 0; i < nodes.length; i++) {
+        const el = nodes[i];
+        if(el.data().component === name){
+            const selectedComponentStrategy = document.getElementById('selected_component_strategy');
+            selectedComponentStrategy.innerHTML = "Strategy selected node: " +el.data().strategy;
+        }
+    }
+}
+
 //Creates a graph for the given name, this name needs to be the same
 //as an id in the HTML DOM tree
 function createGraph(name){
@@ -126,14 +138,19 @@ function createGraph(name){
         const targetCom = evtTarget.data().component;
       
         if( evtTarget === cy || selectedNode === targetCom){
+            //Deselect nodes
             resetColorsGraphs();
             selectedNode = "";
+            const selectedComponentStrategy = document.getElementById('selected_component_strategy');
+            selectedComponentStrategy.innerHTML = "Select a node to get more information about the strategy";
         } else {
+            //Color the nodes in the worker/component graph
             resetColorsGraphs();
             const selectComponent = (el) => el.component;
             changeColorNodes(componentsGraph, targetCom, {'background-color': selectNodeColor}, selectComponent);
             changeColorNodes(workersGraph, targetCom, {'background-color': selectNodeColor}, selectComponent);
             selectedNode = targetCom;
+            searchStrategy(targetCom);
         }
       });
     return cy;
@@ -161,7 +178,8 @@ function addNodes(graph, nodes, textFormat, componentGroup) {
                 id: curNode.id,
                 name: textFormat(curNode),
                 component: componentGroup(curNode),
-                createdBy: curNode.created_in
+                createdBy: curNode.created_in,
+                strategy: curNode.strategy
             }
         };
         graph.add([node]); 
