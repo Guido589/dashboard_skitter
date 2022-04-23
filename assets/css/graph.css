@@ -1,7 +1,7 @@
 @import "./phoenix.css";
 
 #containerWorker{
-  height: 870px;
+  height: auto;
 }
 
 #componentGraph{
@@ -20,7 +20,6 @@
 
 #containerGraphWorker{
   width: auto;
-  flex: 0 0 80%;
 }
 
 .outerContainer {
@@ -36,23 +35,22 @@
     grid-template-columns: auto auto auto;
   }
 
-#worker_info{
-  display: flex;
-}
-
-#nodes_hover{
-  flex: 0 0 20%;
-}
-
 #title_nodes{
   border-bottom: 1px solid black;
+  display: inline-block;
+  margin-bottom: 10px;
 }
 
-#nodes_hover > p{
+#nodes_hover > div > p{
   margin-bottom: 0;
 }
 
-#nodes_hover > p:hover{
+#nodes_hover_names{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+#nodes_hover > div > p:hover{
   border: 1px solid rgba(0, 0, 0, .2);
   cursor: pointer;
   border-radius: 5px;

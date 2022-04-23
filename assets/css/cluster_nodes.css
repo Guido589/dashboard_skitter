@@ -100,3 +100,11 @@
     margin-bottom: 0px;
     padding-bottom: 8px;
 }
+
+#selected_node{
+    margin-left: 20px;
+}
+
+#workflow_title > h2{
+    margin-bottom: 0px;
+}

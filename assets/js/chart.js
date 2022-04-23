@@ -16,7 +16,7 @@ function createChart(name, text, yAxis, unit){
     let chart = c3.generate({
         bindto: '#' + name,
         size: {
-            width: 525,
+            width: 675,
             height: 250
         },                
         color: {

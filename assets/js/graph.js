@@ -46,7 +46,6 @@ workersGraph.on('dragpan', (event)=>{
     disableRefresh();
 });
 
-
 input.addEventListener('input',(event) =>{
     if(input.checked){
         refresh = true;

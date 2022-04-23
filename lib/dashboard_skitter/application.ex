@@ -47,11 +47,11 @@ defmodule DashboardSkitter.Application do
     opts = [strategy: :one_for_one, name: DashboardSkitter.Supervisor]
     if Skitter.Runtime.mode() == :local || Skitter.Runtime.mode() == :master do
       Supervisor.start_link(List.flatten([children | children_master]), opts)
+      Enum.each(Skitter.Runtime.spawned_workflows(), fn wf -> 
+        DashboardSkitter.HandlerFunctions.create_workflow(wf) end)
     else
       Supervisor.start_link(children, opts)
     end
-    Enum.each(Skitter.Runtime.spawned_workflows(), fn wf -> 
-      DashboardSkitter.HandlerFunctions.create_workflow(wf) end)
     Logger.add_backend(DashboardSkitter.CustomLogger)
   end
 

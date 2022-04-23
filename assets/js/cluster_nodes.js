@@ -47,7 +47,7 @@ function initializeClusterNodes(obj){
 }
 
 function addNodeNameToGraphOptions(name){
-    const div = document.getElementById("nodes_hover");
+    const div = document.getElementById("nodes_hover_names");
     const p = document.createElement('p');
     p.onmouseenter = (target) => {
         const selectCreated = (el) => el.createdBy;
