@@ -3,22 +3,77 @@ import dagre from 'cytoscape-dagre';
 
 cytoscape.use(dagre);
 
-const workersGraph = createGraph("workerGraph");
-const componentsGraph = createGraph("componentGraph");
-const selectNodeColor = getComputedStyle(document.body).getPropertyValue('--main-color');
-
-let selectedNode = "";
-let refresh = true;
-
-let options = {
+const workerLayout = {
     name: 'dagre',
     directed: true,
     grid: true,
     fit: true,
     maximal: true,
     rankDir: 'LR',
-    nodeSep: 30
-}
+    rankSep: 300,
+    nodeSep: 300
+};
+const componentLayout = {
+    name: 'dagre',
+    directed: true,
+    grid: true,
+    fit: true,
+    maximal: true,
+    rankDir: 'LR'
+};
+const workersGraph = createGraph(
+    "workerGraph",
+    {
+        'background-color': '#fff',
+        'font-size': '20em',
+        'width': 'label',
+        'shape': 'roundrectangle',
+        'border-width': '10px',
+        'border-color': 'black',
+        'content': 'data(name)',
+        'background-opacity': '0.85',
+        'text-valign': 'center',
+        'text-halign': 'center',
+        'text-wrap': 'wrap',
+        'padding': '20em',
+        'border-radius': '10px'
+    },
+    {
+        'width': '9px',
+        'line-color': 'black',
+        'target-arrow-shape': 'triangle',
+        'arrow-scale': '5',
+        'source-arrow-color': 'black',
+        'target-arrow-color': 'black',
+        'curve-style': 'bezier'
+    }, workerLayout);
+const componentsGraph = createGraph(
+    "componentGraph",
+    {
+        'background-color': '#fff',
+        'shape': 'roundrectangle',
+        'border-width': '1px',
+        'border-color': 'black',
+        'content': 'data(name)',
+        'background-opacity': '0.85',
+        'text-valign': 'center',
+        'text-halign': 'center',
+        'text-wrap': 'wrap',
+        'padding': '3px',
+        'width': 'label'
+    },
+    {
+        'width': '1px',
+        'line-color': 'black',
+        'target-arrow-shape': 'triangle',
+        'source-arrow-color': 'black',
+        'target-arrow-color': 'black',
+        'curve-style': 'bezier'
+    }, componentLayout);
+const selectNodeColor = getComputedStyle(document.body).getPropertyValue('--main-color');
+
+let selectedNode = "";
+let refresh = true;
 
 const checkbox = document.getElementById('checkbox');
 const input = document.createElement("INPUT");
@@ -49,7 +104,7 @@ workersGraph.on('dragpan', (event)=>{
 input.addEventListener('input',(event) =>{
     if(input.checked){
         refresh = true;
-        reloadLayout(workersGraph);
+        reloadLayout(workersGraph, workerLayout);
     }else refresh = false;
 })
 
@@ -96,35 +151,16 @@ function searchStrategy(name){
 
 //Creates a graph for the given name, this name needs to be the same
 //as an id in the HTML DOM tree
-function createGraph(name){
+function createGraph(name, cssNode, cssEdge, layout){
     var cy = cytoscape({
         container: document.querySelector('#'+name),
-        layout: options,
+        layout: layout,
         wheelSensitivity: 0.65,
         style: cytoscape.stylesheet()
             .selector('node')
-            .css({
-                'background-color': '#fff',
-                'shape': 'roundrectangle',
-                'border-width': '1px',
-                'border-color': 'black',
-                'content': 'data(name)',
-                'background-opacity': '0.85',
-                'text-valign': 'center',
-                'text-halign': 'center',
-                'text-wrap': 'wrap',
-                'padding': '3px',
-                'width': 'label'
-            })
+            .css(cssNode)
             .selector('edge')
-            .css({
-                'width': '1px',
-                'line-color': 'black',
-                'target-arrow-shape': 'triangle',
-                'source-arrow-color': 'black',
-                'target-arrow-color': 'black',
-                'curve-style': 'bezier'
-            }),
+            .css(cssEdge),
         elements: {
             nodes: [],
             edges: [],
@@ -155,10 +191,10 @@ function createGraph(name){
     return cy;
 }
 
-function reloadLayout(graph){
+function reloadLayout(graph, layout){
     zoom = graph.zoom();
     pan = graph.pan();
-    graph.makeLayout(options).run();
+    graph.makeLayout(layout).run();
     if(!refresh){
         graph.zoom(zoom);
         graph.pan(pan);
@@ -168,7 +204,7 @@ function reloadLayout(graph){
 //Adds nodes for the given graph, the componentGroup indicates too which
 //component group the workers belong. This is used to highlight the correct
 //nodes
-function addNodes(graph, nodes, textFormat, componentGroup) {
+function addNodes(graph, nodes, textFormat, componentGroup, layout) {
     for (let idx = 0; idx < nodes.length; idx++) {
         const curNode = nodes[idx];
         const node = { 
@@ -183,7 +219,7 @@ function addNodes(graph, nodes, textFormat, componentGroup) {
         };
         graph.add([node]); 
     }
-    reloadLayout(graph);
+    reloadLayout(graph, layout);
 }
 
 function resetView(){
@@ -192,13 +228,13 @@ function resetView(){
 }
 
 //Adds edges for the source to the targets into the graph.
-function addEdges(graph, source, targets) {
+function addEdges(graph, source, targets, layout) {
     for (let idx = 0; idx < targets.length; idx++) {
         const target = targets[idx];
         const idEdge = source.concat(target);
         graph.add([{ group: "edges", data: { id: idEdge, source: source, target: target } }]);
     }
-    reloadLayout(graph);
+    reloadLayout(graph, layout);
 }
 
-export {addNodes, resetView, resetColor, addEdges, changeCheckbox, createGraph, workersGraph, componentsGraph, changeColorNodes}
+export {addNodes, resetView, resetColor, addEdges, changeCheckbox, createGraph, workersGraph, componentsGraph, changeColorNodes, workerLayout, componentLayout}
