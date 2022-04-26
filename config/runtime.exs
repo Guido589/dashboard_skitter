@@ -20,10 +20,11 @@ if config_env() == :prod do
   # variable instead.
   secret_key_base = "TlglRw8jLXfeeOgA23lYb4F/qWAlR64z9IWFaah1PB5GX+KNeKUTLuHQqTeeGS+N"
 
+  host = System.get_env("PHX_HOST") || "localhost"
   port = String.to_integer(System.get_env("PORT") || "4000")
 
   config :dashboard_skitter, DashboardSkitterWeb.Endpoint,
-    url: [host: "localhost", port: 4000],
+    url: [host: host, port: 4000],
     http: [
       # Enable IPv6 and bind on all interfaces.
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
