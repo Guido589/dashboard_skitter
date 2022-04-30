@@ -94,8 +94,8 @@ const input = document.createElement("INPUT");
 const p = document.createElement("span");
 const automaticUpdate = document.createElement("INPUT");
 const pAutomaticUpdate = document.createElement("span");
-checkbox.appendChild(addCheckBox(p, input, "Rerender graph after adding elements"));
-checkbox.appendChild(addCheckBox(pAutomaticUpdate, automaticUpdate, "Automatically update the worker graph"));
+checkbox.appendChild(addCheckBox(p, input, "Automatically reset view after adding elements"));
+checkbox.appendChild(addCheckBox(pAutomaticUpdate, automaticUpdate, "Automatically update the layout of the graph"));
 
 function disableAutomaticallyResetView(){
     automaticallyResetView = false;
@@ -230,7 +230,7 @@ function reloadLayout(graph, layout, manual, sparseGraph){
 function addUpdateButton(){
     const checkbox = document.getElementById('checkbox');
     const b = document.createElement('button');
-    b.innerHTML = "Manually update layout of worker graph"
+    b.innerHTML = "Manually update layout of the graph"
     b.onclick = (target) => {
         reloadLayout(workersGraph, workerLayout, true, false);
     }

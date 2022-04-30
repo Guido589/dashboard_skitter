@@ -43,6 +43,9 @@
 
 #nodes_hover > div > p{
   margin-bottom: 0;
+  margin: auto;
+  border: 1px solid rgb(255, 255, 255);
+  border-radius: 5px;
 }
 
 #nodes_hover_names{
@@ -53,7 +56,6 @@
 #nodes_hover > div > p:hover{
   border: 1px solid rgba(0, 0, 0, .2);
   cursor: pointer;
-  border-radius: 5px;
 }
 
 #workflow_title{
