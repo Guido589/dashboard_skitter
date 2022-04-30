@@ -63,14 +63,6 @@
 #reset_button{
   margin-left: auto;
   order: 2;
-  background-color: var(--main-color);
-  border-color: var(--main-color);
-  color: black;
-}
-
-#reset_button:hover{
-  background-color: var(--hover-main-color);
-  border-color: var(--hover-main-color);
 }
 
 #title_worker, #checkbox{
@@ -85,8 +77,22 @@
 #checkbox{
   margin-left: auto;
   order: 2;
+  display: block;
+  white-space: nowrap;
+}
+#checkbox input {
+  vertical-align: middle;
+  margin: 0px;
+  margin-right: 5px;
+}
+#checkbox label span {
+  vertical-align: middle;
 }
 
 #selected_component_strategy > p{
+  margin-bottom: 0px;
+}
+
+.checkbox_element > p{
   margin-bottom: 0px;
 }

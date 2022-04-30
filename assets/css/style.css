@@ -5,4 +5,16 @@
     --low-cpu-usage: var(--main-color);
     --medium-cpu-usage: #509cff;
     --high-cpu-usage: #FA5A50;
-  }
+}
+
+button, button:focus{
+  background-color: var(--main-color);
+  border-color: var(--main-color);
+  color: black;
+}
+
+button:hover{
+  background-color: var(--hover-main-color);
+  border-color: var(--hover-main-color);
+  color: black;
+}

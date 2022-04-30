@@ -95,11 +95,11 @@ channel.on("initialize", payload =>{
   const logs = payload.reply.logs.logs;
 
   //Add nodes to both graphs
-  graph.addNodes(graph.workersGraph, replyWorkers, workerFormatNode, workerGroup, graph.workerLayout);
-  graph.addNodes(graph.componentsGraph, replyComponents, componentFormatNode, componentGroup, graph.componentLayout);
+  graph.addNodes(graph.workersGraph, replyWorkers, workerFormatNode, workerGroup, graph.checkAmountNodes);
+  graph.addNodes(graph.componentsGraph, replyComponents, componentFormatNode, componentGroup, ()=>{});
   //Add edges between the nodes in both graphs
-  initializeEdgesNodes(replyWorkers, graph.workersGraph, graph.workerLayout);
-  initializeEdgesNodes(replyComponents, graph.componentsGraph, graph.componentLayout);
+  initializeEdgesNodes(replyWorkers, graph.workersGraph);
+  initializeEdgesNodes(replyComponents, graph.componentsGraph);
   //Initialize the detailed info for the cluster nodes
   clusterNodes.initializeClusterNodes(clusterNodesObj);
   time.initializeStartTime(startTime, isStarted);
@@ -115,27 +115,27 @@ channel.on("started", payload =>{
 channel.on("update_workers", payload =>{
   console.log("Received update worker: ", payload);
   let msg = payload.msg;
-  graph.addNodes(graph.workersGraph, [msg], workerFormatNode, workerGroup, graph.workerLayout);
+  graph.addNodes(graph.workersGraph, [msg], workerFormatNode, workerGroup, graph.checkAmountNodes);
 })
 
 //Handles the message to add a new edge the workers graph
 channel.on("update_edges_workers", payload =>{
   console.log("Received update workers edge: ", payload);
   let msg = payload.msg;
-  graph.addEdges(graph.workersGraph, msg.from, [msg.to], graph.workerLayout);
+  graph.addEdges(graph.workersGraph, msg.from, [msg.to], ()=>{});
 })
 
 //Handles the message to add a new node the workflow graph
 channel.on("update_components", payload =>{
   console.log("Received update components: ", payload);
-  graph.addNodes(graph.componentsGraph, [payload.msg], componentFormatNode, componentGroup, graph.componentLayout);
+  graph.addNodes(graph.componentsGraph, [payload.msg], componentFormatNode, componentGroup, ()=>{});
 })
 
 //Handles the message to add a edge node the workflow graph
 channel.on("update_edges_components", payload =>{
   console.log("Received update components edge: ", payload);
   let msg = payload.msg;
-  graph.addEdges(graph.componentsGraph, msg.from, [msg.to], graph.componentLayout);
+  graph.addEdges(graph.componentsGraph, msg.from, [msg.to]);
 })
 
 //Handles the message to update the metrics
@@ -155,9 +155,9 @@ channel.on("add_log", payload =>{
 });
 
 //Loops over each component/worker and takes the destinations of the edges out
-function initializeEdgesNodes(nodes, graphNode, layout){
+function initializeEdgesNodes(nodes, graphNode){
   nodes.forEach((node) =>{
-    graph.addEdges(graphNode, node.id, node.to, layout);
+    graph.addEdges(graphNode, node.id, node.to);
   });
 }
 

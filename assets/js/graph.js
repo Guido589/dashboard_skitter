@@ -1,6 +1,11 @@
 import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 
+let shouldReload = true;
+let buttonAdded = false;
+let autoReload = true;
+let maxAmountNodesAutoReload = 175;
+
 cytoscape.use(dagre);
 
 const workerLayout = {
@@ -70,42 +75,62 @@ const componentsGraph = createGraph(
         'curve-style': 'bezier'
     }, componentLayout);
 const selectNodeColor = getComputedStyle(document.body).getPropertyValue('--main-color');
-
 let selectedNode = "";
-let refresh = true;
+let automaticallyResetView = true;
+
+function addCheckBox(textEl, input, text){
+    const div = document.createElement('label');
+    div.classList.add('checkbox_element');
+    input.setAttribute("type", "checkbox");
+    input.checked = true;
+    div.appendChild(input);
+    div.appendChild(textEl);
+    textEl.innerHTML = text;
+    return div;
+}
 
 const checkbox = document.getElementById('checkbox');
 const input = document.createElement("INPUT");
-const p = document.createElement("p");
-input.setAttribute("type", "checkbox");
-input.checked = true;
-p.innerHTML = "Rerender graph after adding elements"
-checkbox.appendChild(input);
-checkbox.appendChild(p);
+const p = document.createElement("span");
+const automaticUpdate = document.createElement("INPUT");
+const pAutomaticUpdate = document.createElement("span");
+checkbox.appendChild(addCheckBox(p, input, "Rerender graph after adding elements"));
+checkbox.appendChild(addCheckBox(pAutomaticUpdate, automaticUpdate, "Automatically update the worker graph"));
 
-function disableRefresh(){
-    refresh = false;
+function disableAutomaticallyResetView(){
+    automaticallyResetView = false;
     input.checked = false;
 }
 
 workersGraph.on('pinchzoom', (event)=>{
-    disableRefresh();
+    disableAutomaticallyResetView();
 });
 
 workersGraph.on('scrollzoom', (event)=>{
-    disableRefresh();
+    disableAutomaticallyResetView();
 });
 
 workersGraph.on('dragpan', (event)=>{
-    disableRefresh();
+    disableAutomaticallyResetView();
 });
 
 input.addEventListener('input',(event) =>{
     if(input.checked){
-        refresh = true;
-        reloadLayout(workersGraph, workerLayout);
-    }else refresh = false;
-})
+        automaticallyResetView = true;
+        reloadLayout(workersGraph, workerLayout, true, false);
+    }else automaticallyResetView = false;
+});
+
+automaticUpdate.addEventListener('input', (event)=>{
+    if(automaticUpdate.checked && workersGraph.nodes().length < maxAmountNodesAutoReload){
+        autoReload = true;
+        reloadLayout(workersGraph, workerLayout, true, false);
+    }else if(automaticUpdate.checked){
+        automaticUpdate.checked = false;
+    }else{
+        autoReload = false;
+    }
+});
 
 function changeCheckbox(){
     input.checked = true;
@@ -190,20 +215,41 @@ function createGraph(name, cssNode, cssEdge, layout){
     return cy;
 }
 
-function reloadLayout(graph, layout){
+function reloadLayout(graph, layout, manual, sparseGraph){
     zoom = graph.zoom();
     pan = graph.pan();
-    graph.makeLayout(layout).run();
-    if(!refresh){
+    if(autoReload || manual || sparseGraph){
+        graph.makeLayout(layout).run();
+    }
+    if(!automaticallyResetView){
         graph.zoom(zoom);
         graph.pan(pan);
+    }
+}
+
+function addUpdateButton(){
+    const checkbox = document.getElementById('checkbox');
+    const b = document.createElement('button');
+    b.innerHTML = "Manually update layout of worker graph"
+    b.onclick = (target) => {
+        reloadLayout(workersGraph, workerLayout, true, false);
+    }
+    checkbox.appendChild(b);
+}
+
+function checkAmountNodes(nodes){
+    if(nodes.length >= maxAmountNodesAutoReload && !buttonAdded){
+        autoReload = false;
+        automaticUpdate.checked = false;
+        addUpdateButton();
+        buttonAdded = true;
     }
 }
 
 //Adds nodes for the given graph, the componentGroup indicates too which
 //component group the workers belong. This is used to highlight the correct
 //nodes
-function addNodes(graph, nodes, textFormat, componentGroup, layout) {
+function addNodes(graph, nodes, textFormat, componentGroup, checkNodes) {
     for (let idx = 0; idx < nodes.length; idx++) {
         const curNode = nodes[idx];
         const node = { 
@@ -217,8 +263,9 @@ function addNodes(graph, nodes, textFormat, componentGroup, layout) {
             }
         };
         graph.add([node]); 
+        checkNodes(graph.nodes());
     }
-    reloadLayout(graph, layout);
+    shouldReload = true;
 }
 
 function resetView(){
@@ -227,13 +274,23 @@ function resetView(){
 }
 
 //Adds edges for the source to the targets into the graph.
-function addEdges(graph, source, targets, layout) {
+function addEdges(graph, source, targets) {
     for (let idx = 0; idx < targets.length; idx++) {
         const target = targets[idx];
         const idEdge = source.concat(target);
         graph.add([{ group: "edges", data: { id: idEdge, source: source, target: target } }]);
     }
-    reloadLayout(graph, layout);
+    shouldReload = true;
 }
 
-export {addNodes, resetView, resetColor, addEdges, changeCheckbox, createGraph, workersGraph, componentsGraph, changeColorNodes, workerLayout, componentLayout}
+function checkUpdate(){
+    if(shouldReload){
+        reloadLayout(workersGraph, workerLayout, false, false);
+        reloadLayout(componentsGraph, componentLayout, false, true);
+        shouldReload = false;
+    }
+}
+
+setInterval(checkUpdate, 2000);
+
+export {addNodes, resetView, checkAmountNodes, resetColor, addEdges, changeCheckbox, createGraph, workersGraph, componentsGraph, changeColorNodes}
