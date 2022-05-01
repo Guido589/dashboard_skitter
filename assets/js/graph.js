@@ -95,7 +95,7 @@ const p = document.createElement("span");
 const automaticUpdate = document.createElement("INPUT");
 const pAutomaticUpdate = document.createElement("span");
 checkbox.appendChild(addCheckBox(p, automaticResetViewInput, "Automatically reset view after adding elements"));
-checkbox.appendChild(addCheckBox(pAutomaticUpdate, automaticUpdate, "Automatically update the layout of the graph"));
+checkbox.appendChild(addCheckBox(pAutomaticUpdate, automaticUpdate, "Automatically update the graph layout"));
 
 //Disables the automatic reset of the view after adding an element to the graph because the user is zooming or panning
 function disableAutomaticallyResetView(){
