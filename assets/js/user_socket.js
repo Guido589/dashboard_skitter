@@ -13,6 +13,7 @@ import * as consoleDash from "./console.js"
 // token for authentication. Read below how it should be used.
 let socket = new Socket("/socket", {params: {token: window.userToken}})
 
+//Event listener to check if the browser tab is visible. If it is not visible do not reload the charts
 document.addEventListener('visibilitychange', function (event){
   if(document.hidden){
     chart.changeVisibility(false);
@@ -21,6 +22,7 @@ document.addEventListener('visibilitychange', function (event){
   }
 })
 
+//Adds a reset button to the workflow title. This button resets the view of both graphs
 const workflowTitle = document.getElementById('workflow_title');
 const b = document.createElement('button')
 b.innerHTML = "Reset graphs view"

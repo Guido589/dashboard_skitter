@@ -90,18 +90,20 @@ function addCheckBox(textEl, input, text){
 }
 
 const checkbox = document.getElementById('checkbox');
-const input = document.createElement("INPUT");
+const automaticResetViewInput = document.createElement("INPUT");
 const p = document.createElement("span");
 const automaticUpdate = document.createElement("INPUT");
 const pAutomaticUpdate = document.createElement("span");
-checkbox.appendChild(addCheckBox(p, input, "Automatically reset view after adding elements"));
+checkbox.appendChild(addCheckBox(p, automaticResetViewInput, "Automatically reset view after adding elements"));
 checkbox.appendChild(addCheckBox(pAutomaticUpdate, automaticUpdate, "Automatically update the layout of the graph"));
 
+//Disables the automatic reset of the view after adding an element to the graph because the user is zooming or panning
 function disableAutomaticallyResetView(){
     automaticallyResetView = false;
-    input.checked = false;
+    automaticResetViewInput.checked = false;
 }
 
+//These events check if the user is zooming or panning in the canvas of the graph
 workersGraph.on('pinchzoom', (event)=>{
     disableAutomaticallyResetView();
 });
@@ -114,26 +116,28 @@ workersGraph.on('dragpan', (event)=>{
     disableAutomaticallyResetView();
 });
 
-input.addEventListener('input',(event) =>{
-    if(input.checked){
-        automaticallyResetView = true;
+//Event listener on the checkbox to enable or disable the automatic view reset
+automaticResetViewInput.addEventListener('input',(event) =>{
+    if(automaticResetViewInput.checked){
+        automaticallyResetView = true; //No longer want to be zoomed in 
         reloadLayout(workersGraph, workerLayout, true, false);
-    }else automaticallyResetView = false;
+    }else automaticallyResetView = false; //Zoomed in, do not reset view
 });
 
+//Event listener on the checkbox to enable or disable the automatic update of the layout
 automaticUpdate.addEventListener('input', (event)=>{
-    if(automaticUpdate.checked && workersGraph.nodes().length < maxAmountNodesAutoReload){
-        autoReload = true;
+    if(automaticUpdate.checked && workersGraph.nodes().length <= maxAmountNodesAutoReload){
+        autoReload = true; //No longer want to manually reload layout
         reloadLayout(workersGraph, workerLayout, true, false);
     }else if(automaticUpdate.checked){
-        automaticUpdate.checked = false;
+        automaticUpdate.checked = false; //Manually reload layout because there are too many nodes
     }else{
-        autoReload = false;
+        autoReload = false; //Manually reload layout 
     }
 });
 
 function changeCheckbox(){
-    input.checked = true;
+    automaticResetViewInput.checked = true;
 }
 
 //Changes the color of the nodes that where selected to highlight them
@@ -215,28 +219,31 @@ function createGraph(name, cssNode, cssEdge, layout){
     return cy;
 }
 
+//Reloads the layout of the given graph when new elements got added to the graph
 function reloadLayout(graph, layout, manual, sparseGraph){
     zoom = graph.zoom();
     pan = graph.pan();
-    if(autoReload || manual || sparseGraph){
+    if(autoReload || manual || sparseGraph){ //Reload layout when the autoreload isn't disabled, the user manually wants to reload the layout or it is a sparse graph
         graph.makeLayout(layout).run();
     }
-    if(!automaticallyResetView){
+    if(!automaticallyResetView){ //User is zoomed in, do not reset zoom and pan
         graph.zoom(zoom);
         graph.pan(pan);
     }
 }
 
+//If the threshold of the maximum amount of nodes is reached, a button needs to be added to manually reload the graphs layout
 function addUpdateButton(){
     const checkbox = document.getElementById('checkbox');
     const b = document.createElement('button');
     b.innerHTML = "Manually update layout of the graph"
     b.onclick = (target) => {
-        reloadLayout(workersGraph, workerLayout, true, false);
+        reloadLayout(workersGraph, workerLayout, true, false); //Manually reload layout
     }
     checkbox.appendChild(b);
 }
 
+//Check how many nodes are present in a graph. If there are more than the threshold, autoreload of the layout of the graph should be disabled
 function checkAmountNodes(nodes){
     if(nodes.length >= maxAmountNodesAutoReload && !buttonAdded){
         autoReload = false;
@@ -268,6 +275,7 @@ function addNodes(graph, nodes, textFormat, componentGroup, checkNodes) {
     shouldReload = true;
 }
 
+//Recenters the view of the user in both graphs
 function resetView(){
     workersGraph.fit();
     componentsGraph.fit();
@@ -283,6 +291,7 @@ function addEdges(graph, source, targets) {
     shouldReload = true;
 }
 
+//This function get invoked every 2s and checks if new nodes or edges got added to the graph
 function checkUpdate(){
     if(shouldReload){
         reloadLayout(workersGraph, workerLayout, false, false);

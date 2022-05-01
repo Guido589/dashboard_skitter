@@ -46,6 +46,7 @@ function initializeClusterNodes(obj){
     }
 }
 
+//Adds next to the worker graph the name of the worker in the cluster. It adds hover events to highlight the nodes created by the worker.
 function addNodeNameToGraphOptions(name){
     const div = document.getElementById("nodes_hover_names");
     const p = document.createElement('p');
