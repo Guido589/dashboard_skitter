@@ -4,7 +4,7 @@ import dagre from 'cytoscape-dagre';
 let shouldReload = true;
 let buttonAdded = false;
 let autoReload = true;
-let maxAmountNodesAutoReload = 175;
+let maxAmountNodesAutoReload = 150;
 
 cytoscape.use(dagre);
 
