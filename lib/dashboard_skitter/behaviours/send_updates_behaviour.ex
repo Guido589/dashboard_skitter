@@ -1,5 +1,9 @@
 defmodule DashboardSkitter.SendUpdateBehaviour do
 
+    @moduledoc """
+    Behaviour to implement to get updates from dashboard_skitter
+    """
+
     # Skitter metrics
     @callback update_workers(bdy :: map) :: nil
     @callback update_edges_workers(bdy :: map) :: nil

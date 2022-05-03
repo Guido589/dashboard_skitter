@@ -1,6 +1,14 @@
 defmodule DashboardSkitter.Logs do
     use GenServer
 
+      @moduledoc """
+        GenServer to save all log messages from the master and worker nodes.
+        %{
+          counter: 0,
+          logs: %{}
+        }
+       """
+
     def start_link(start) do
       GenServer.start_link(__MODULE__, start, name: :logs)
     end
@@ -9,6 +17,7 @@ defmodule DashboardSkitter.Logs do
       {:ok, start}
     end
 
+    #Adds a log to the logs in the map. The ctr is used to create a unique key for the entry
     def handle_cast({:add_log, new_log}, map) do
         ctr = map.counter
         logs = map.logs

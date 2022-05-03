@@ -3,11 +3,19 @@ defmodule DashboardSkitterWeb.UserChannel do
 
     @channel_name "user"
 
+    #User joined the channel. It creates a connection and sends a message to itself.
     def join(@channel_name, _message, socket) do
         send(self(), :after_join)
         {:ok, socket}
       end
   
+    #After the user has joined, it must be initialized with the current status of the dashboard. It sends
+    #a map with all the information:
+    # %{
+    #   workflow: ,
+    #   cluster_nodes: ,
+    #   logs: 
+    # }
     def handle_info(:after_join, socket) do
       msg = DashboardSkitter.Workflow.get_state(:workflow)
       |> Map.merge(%{cluster_nodes: DashboardSkitter.SystemMetrics.get_state()})
@@ -16,6 +24,7 @@ defmodule DashboardSkitterWeb.UserChannel do
       {:noreply, socket}
     end
 
+    #Sends a broadcast on the user channel with the body
     def update_workers(bdy) do
       DashboardSkitterWeb.Endpoint.broadcast(@channel_name, "update_workers", %{msg: bdy})
     end
