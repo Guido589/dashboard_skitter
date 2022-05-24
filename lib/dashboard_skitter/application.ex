@@ -52,20 +52,21 @@ defmodule DashboardSkitter.Application do
     :application.start(:sasl)
     :application.start(:os_mon)
 
-    #Adds the CustomLogger as backedn to get the log messages
-    Logger.add_backend(DashboardSkitter.CustomLogger)
-
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: DashboardSkitter.Supervisor]
-    if Skitter.Runtime.mode() == :local || Skitter.Runtime.mode() == :master do
+    res = if Skitter.Runtime.mode() == :local || Skitter.Runtime.mode() == :master do
+      sup = Supervisor.start_link(List.flatten([children | children_master]), opts)
       #Checks if Skitter has created a workflow before the dashboard has started
       Enum.each(Skitter.Runtime.spawned_workflows(), fn ref -> 
         DashboardSkitter.HandlerFunctions.create_workflow(Skitter.Runtime.get_workflow(ref)) end)
-      Supervisor.start_link(List.flatten([children | children_master]), opts)
+      sup
     else
       Supervisor.start_link(children, opts)
     end
+    #Adds the CustomLogger as backedn to get the log messages
+    Logger.add_backend(DashboardSkitter.CustomLogger)
+    res
   end
 
   # Tell Phoenix to update the endpoint configuration
