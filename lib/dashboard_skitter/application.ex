@@ -58,8 +58,8 @@ defmodule DashboardSkitter.Application do
     if Skitter.Runtime.mode() == :local || Skitter.Runtime.mode() == :master do
       Supervisor.start_link(List.flatten([children | children_master]), opts)
       #Checks if Skitter has created a workflow before the dashboard has started
-      Enum.each(Skitter.Runtime.spawned_workflows(), fn wf -> 
-        DashboardSkitter.HandlerFunctions.create_workflow(wf) end)
+      Enum.each(Skitter.Runtime.spawned_workflows(), fn ref -> 
+        DashboardSkitter.HandlerFunctions.create_workflow(Skitter.Runtime.get_workflow(ref)) end)
     else
       Supervisor.start_link(children, opts)
     end
