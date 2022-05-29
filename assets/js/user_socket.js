@@ -25,7 +25,7 @@ document.addEventListener('visibilitychange', function (event){
 //Adds a reset button to the workflow title. This button resets the view of both graphs
 const workflowTitle = document.getElementById('workflow_title');
 const b = document.createElement('button')
-b.innerHTML = "Reset graphs view"
+b.innerHTML = "Reset Graph Views"
 b.setAttribute('id', 'reset_button');
 b.onclick = (target) => {
   graph.resetView();
